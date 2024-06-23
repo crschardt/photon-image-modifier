@@ -49,8 +49,8 @@ jobs:
         image_additional_mb: 1500
         bind_mount_repository: true
         base_image: ${{ matrix.base_image }}
-        # bootpartition: 1
-        # rootpartition: 2
+        bootpartition: 
+        rootpartition: 2
         commands: |
           touch /etc/cloud/cloud-init.disabled
         # commands: |
