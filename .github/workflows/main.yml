@@ -52,8 +52,10 @@ jobs:
         bootpartition: 1
         rootpartition: 2
         commands: |
-          chmod +x ${{matrix.script}}
-          ${{ matrix.script }}
+          touch /etc/cloud/cloud-init.disabled
+        # commands: |
+        #   chmod +x ${{matrix.script}}
+        #   ${{ matrix.script }}
 
     - name: Compress built image
       run: |
