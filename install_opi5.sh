@@ -11,14 +11,14 @@ else
 fi
 echo "pi:raspberry" | chpasswd
 
-apt-get update
-wget https://git.io/JJrEP -O install.sh
-chmod +x install.sh
+# apt-get update
+# wget https://git.io/JJrEP -O install.sh
+# chmod +x install.sh
 
-sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' install.sh
+# sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' install.sh
 
-./install.sh -n -q
-rm install.sh
+# ./install.sh -n -q
+# rm install.sh
 
 # # Installing addtional things
 # apt-get install -y network-manager net-tools libatomic1
