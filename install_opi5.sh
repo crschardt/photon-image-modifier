@@ -17,7 +17,7 @@ chmod +x install.sh
 
 sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' install.sh
 
-./install.sh -q
+./install.sh -m -q
 rm install.sh
 
 
