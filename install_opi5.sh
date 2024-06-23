@@ -6,8 +6,8 @@ else
     echo "creating pi user"
     useradd pi -m -b /home -s /bin/bash
     usermod -a -G sudo pi
-    mkdir /home/pi
-    chown -R pi /home/pi
+    # mkdir /home/pi
+    # chown -R pi /home/pi
 fi
 echo "pi:raspberry" | chpasswd
 
