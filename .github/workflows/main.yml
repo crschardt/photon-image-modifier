@@ -2,10 +2,7 @@ name: Build driver
 on:
   push:
     branches: [ master ]
-    tags:
-      - 'v*'
   pull_request:
-    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -16,11 +13,11 @@ jobs:
     - uses: pguyot/arm-runner-action@v2.6.5
       id: install_deps
       with:
-        image_additional_mb: 1500
-        bind_mount_repository: true
+        # image_additional_mb: 1500
+        # bind_mount_repository: true
         base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.2.1/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz
-        commands: |
-          touch ./test
+        # commands: |
+        #   touch ./test
 
     - name: Compress built image
       run: |
@@ -33,6 +30,15 @@ jobs:
         path: testimage.img.xz
         if-no-files-found: error
         retention-days: 1
+
+# name: Build driver
+# on:
+#   push:
+#     branches: [ master ]
+#     tags:
+#       - 'v*'
+#   pull_request:
+#     branches: [ master ]
 
 # jobs:
 #   build:
