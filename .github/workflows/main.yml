@@ -20,15 +20,16 @@ jobs:
         #   touch ./test
 
     - name: disk diagnostics
+      shell: bash
       run: |
         mv ${{ steps.install_deps.outputs.image }} testimage.img
-        loopdev = $(losetup --find --show --partscan testimage.img)
+        loopdev = $(sudo losetup --find --show --partscan testimage.img)
         echo "Created loopback device ${loopdev}"
         echo "*** lsblk ***"
         lsblk
         echo "*** parted ***"
-        parted "${loopdev}" print
-        losetup --detach "${loopdev}"
+        sudo parted "${loopdev}" print
+        sudo losetup --detach "${loopdev}"
 
 
     # - name: Compress built image
