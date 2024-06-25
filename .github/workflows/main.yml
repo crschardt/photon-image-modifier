@@ -21,9 +21,13 @@ jobs:
 
     - name: disk diagnostics
       run: |
+        echo "*** lsblk ***"
         lsblk
+        echo "*** parted ***"
         sudo parted --list
-        sudo fdisk -l ${{ steps.install_deps.outputs.image }}
+        echo "*** fdisk ***"
+        mv ${{ steps.install_deps.outputs.image }} testimage.img
+        sudo fdisk -l testimage.img
 
 
     # - name: Compress built image
