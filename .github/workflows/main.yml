@@ -21,13 +21,14 @@ jobs:
 
     - name: disk diagnostics
       run: |
+        mv ${{ steps.install_deps.outputs.image }} testimage.img
+        loopdev = $(losetup --find --show --partscan testimage.img)
+        echo "Created loopback device ${loopdev}"
         echo "*** lsblk ***"
         lsblk
         echo "*** parted ***"
-        sudo parted --list
-        echo "*** fdisk ***"
-        mv ${{ steps.install_deps.outputs.image }} testimage.img
-        sudo fdisk -l testimage.img
+        parted "${loopdev}" print
+        losetup --detach "${loopdev}"
 
 
     # - name: Compress built image
