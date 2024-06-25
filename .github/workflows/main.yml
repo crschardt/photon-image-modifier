@@ -18,9 +18,12 @@ jobs:
         base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.2.1/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz
         # commands: |
         #   touch ./test
+
+    - name: disk diagnostics
       run: |
         lsblk
         sudo parted --list
+        sudo fdisk -l ${{ steps.install_deps.outputs.image }}
 
 
     # - name: Compress built image
