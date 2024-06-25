@@ -23,13 +23,9 @@ jobs:
       shell: bash
       run: |
         mv ${{ steps.install_deps.outputs.image }} testimage.img
-        loopdev = $(sudo losetup --find --show --partscan testimage.img)
-        echo "Created loopback device ${loopdev}"
-        echo "*** lsblk ***"
-        lsblk
-        echo "*** parted ***"
-        sudo parted "${loopdev}" print
-        sudo losetup --detach "${loopdev}"
+        chmod +x ./make_bootable.sh
+        sudo ./make_bootable.sh testimage.img
+
 
 
     # - name: Compress built image
