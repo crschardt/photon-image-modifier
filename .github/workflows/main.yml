@@ -18,18 +18,22 @@ jobs:
         base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.2.1/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz
         # commands: |
         #   touch ./test
-
-    - name: Compress built image
       run: |
-        mv ${{ steps.install_deps.outputs.image }} testimage.img
-        sudo xz -T 0 -v testimage.img
+        lsblk
+        sudo parted --list
 
-    - uses: actions/upload-artifact@v4.3.3
-      with:
-        name: testimage.img.xz
-        path: testimage.img.xz
-        if-no-files-found: error
-        retention-days: 1
+
+    # - name: Compress built image
+    #   run: |
+    #     mv ${{ steps.install_deps.outputs.image }} testimage.img
+    #     sudo xz -T 0 -v testimage.img
+
+    # - uses: actions/upload-artifact@v4.3.3
+    #   with:
+    #     name: testimage.img.xz
+    #     path: testimage.img.xz
+    #     if-no-files-found: error
+    #     retention-days: 1
 
 # name: Build driver
 # on:
