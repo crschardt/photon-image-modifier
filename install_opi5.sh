@@ -35,7 +35,7 @@ apt-get install -y libc6 libstdc++6
 
 # Remove extra packages 
 echo "Purging extra things"
-apt-get remove -y gdb gcc g++ linux-headers* libgcc*-dev
+# apt-get remove -y gdb gcc g++ linux-headers* libgcc*-dev
 
 snap remove --purge lxd
 snap remove --purge core22
