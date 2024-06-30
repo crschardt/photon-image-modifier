@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: pguyot/arm-runner-action@v2.6.5
+    - uses: crschardt/arm-runner-action@HEAD
       id: install_deps
       with:
         # image_additional_mb: 1500
@@ -23,8 +23,8 @@ jobs:
       shell: bash
       run: |
         mv ${{ steps.install_deps.outputs.image }} testimage.img
-        chmod +x ./make_bootable.sh
-        sudo ./make_bootable.sh testimage.img
+        parted --script testimage.img print free
+
 
 
 
