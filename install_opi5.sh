@@ -37,10 +37,10 @@ apt-get install -y libc6 libstdc++6
 echo "Purging extra things"
 # apt-get remove -y gdb gcc g++ linux-headers* libgcc*-dev
 
-snap remove --purge lxd
-snap remove --purge core22
-apt-get remove --purge -y snapd
-apt-get remove --purge -y lxd-installer
+# snap remove --purge lxd
+# snap remove --purge core22
+apt-get purge -y snapd
+apt-get purge -y lxd-installer
 
 apt-get autoremove -y
 
