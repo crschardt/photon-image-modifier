@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: crschardt/arm-runner-action@HEAD
+    - uses: crschardt/arm-runner-action@gpt-support
       id: install_deps
       with:
         # image_additional_mb: 1500
