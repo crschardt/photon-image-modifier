@@ -25,6 +25,7 @@ apt-get autoremove -y
 # Installing addtional things
 # apt-get install -y network-manager net-tools libatomic1
 # mrcal stuff
+apt-get install -y libatomic1
 apt-get install -y libcholmod3 liblapack3 libsuitesparseconfig5
 apt-get install -y libc6 libstdc++6
 
