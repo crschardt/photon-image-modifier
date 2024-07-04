@@ -20,10 +20,11 @@ apt-get purge --yes snapd
 
 apt-get autoremove
 
+# run Photonvision install script
 wget https://git.io/JJrEP -O install.sh
 chmod +x install.sh
 
-sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' install.sh
+sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=0-7/g' install.sh
 
 ./install.sh -n -q
 rm install.sh
