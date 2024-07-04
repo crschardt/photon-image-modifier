@@ -16,6 +16,7 @@ echo 'Purging snaps'
 # get rid of snaps
 rm -rf /var/lib/snapd/seed/snaps/*
 rm -f /var/lib/snapd/seed/seed.yaml
+apt-get purge --yes --quiet lxd-installer lxd-agent-loader
 apt-get purge --yes --quiet snapd
 
 apt-get --yes --quiet autoremove
