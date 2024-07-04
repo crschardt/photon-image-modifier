@@ -9,16 +9,16 @@ else
 fi
 echo "pi:raspberry" | chpasswd
 
-apt-get update
+apt-get update --quiet
 
 # clean up stuff
 echo 'Purging snaps'
 # get rid of snaps
 rm -rf /var/lib/snapd/seed/snaps/*
 rm -f /var/lib/snapd/seed/seed.yaml
-apt-get purge --yes snapd
+apt-get purge --yes --quiet snapd
 
-apt-get autoremove
+apt-get --yes --quiet autoremove
 
 # run Photonvision install script
 wget https://git.io/JJrEP -O install.sh
@@ -39,9 +39,9 @@ rm install.sh
 
 echo "Installing additional things"
 sudo apt-get update
-apt-get install -y network-manager net-tools libatomic1
+apt-get install --yes --quiet network-manager net-tools libatomic1
 
-apt-get install -y libc6 libstdc++6
+apt-get install --yes --quiet libc6 libstdc++6
 
 # cat > /etc/netplan/00-default-nm-renderer.yaml <<EOF
 # network:
@@ -54,10 +54,10 @@ if [ $(cat /etc/lsb-release | grep -c "24.04") -gt 0 ]; then
     add-apt-repository -y -S 'deb http://ports.ubuntu.com/ubuntu-ports jammy main universe'
 fi
 
-apt-get update
+apt-get --quiet update
 
 # mrcal stuff
-apt-get install -y libcholmod3 liblapack3 libsuitesparseconfig5
+apt-get install --yes --quiet libcholmod3 liblapack3 libsuitesparseconfig5
 
 
 rm -rf /var/lib/apt/lists/*
