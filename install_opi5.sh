@@ -10,6 +10,16 @@ fi
 echo "pi:raspberry" | chpasswd
 
 apt-get update
+
+# clean up stuff
+echo 'Purging snaps'
+# get rid of snaps
+rm -rf /var/lib/snapd/seed/snaps/*
+rm -f /var/lib/snapd/seed/seed.yaml
+apt-get purge --yes snapd
+
+apt-get autoremove
+
 wget https://git.io/JJrEP -O install.sh
 chmod +x install.sh
 
@@ -20,10 +30,10 @@ rm install.sh
 
 
 # Remove extra packages 
-echo "Purging extra things"
+# echo "Purging extra things"
 # apt-get remove -y gdb gcc g++ linux-headers* libgcc*-dev
 # apt-get remove -y snapd
-apt-get autoremove -y
+# apt-get autoremove -y
 
 
 echo "Installing additional things"
