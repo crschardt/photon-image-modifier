@@ -46,6 +46,7 @@ sudo apt-get update
 apt-get install --yes --quiet network-manager net-tools libatomic1
 
 systemctl disable NetworkManager-wait-online.service
+systemctl disable systemd-networkd-wait-online.service
 
 apt-get install --yes --quiet libc6 libstdc++6
 
