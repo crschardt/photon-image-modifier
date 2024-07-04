@@ -45,6 +45,8 @@ echo "Installing additional things"
 sudo apt-get update
 apt-get install --yes --quiet network-manager net-tools libatomic1
 
+systemctl disable NetworkManager-wait-online.service
+
 apt-get install --yes --quiet libc6 libstdc++6
 
 # cat > /etc/netplan/00-default-nm-renderer.yaml <<EOF
