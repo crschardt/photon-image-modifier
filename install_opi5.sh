@@ -19,6 +19,9 @@ rm -f /var/lib/snapd/seed/seed.yaml
 apt-get purge --yes --quiet lxd-installer lxd-agent-loader
 apt-get purge --yes --quiet snapd
 
+# remove bluetooth daemon
+apt-get purge --yes --quiet bluez
+
 apt-get --yes --quiet autoremove
 
 # run Photonvision install script
@@ -62,7 +65,7 @@ apt-get install --yes --quiet libcholmod3 liblapack3 libsuitesparseconfig5
 
 
 rm -rf /var/lib/apt/lists/*
-apt-get clean
+apt-get --yes --quiet autoclean
 
 rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
