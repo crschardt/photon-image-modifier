@@ -59,7 +59,7 @@ tail /boot/user-data
 
 # tell NetworkManager not to wait for the carrier on ethernet, which can delay boot
 # when the coprocessor isn't connected to the ethernet
-cat > /etc/ <<EOF
+cat > /etc/NetworkManager/conf.d/50-ignore-carrier.conf <<EOF
 [main]
 ignore-carrier=*
 EOF
