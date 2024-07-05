@@ -1,4 +1,7 @@
 
+pwd
+ls -l
+
 # Create pi/raspberry login
 if id "$1" >/dev/null 2>&1; then
     echo 'user found'
@@ -30,7 +33,7 @@ apt-get --yes --quiet autoremove
 after=$(df --output=used / | tail -n1)
 freed=$(( before - after ))
 
-echo "Freed up $freed bytes"
+echo "Freed up $freed KiB"
 
 # run Photonvision install script
 wget https://git.io/JJrEP -O install.sh
