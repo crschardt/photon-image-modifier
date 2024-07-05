@@ -51,16 +51,20 @@ echo "Installing additional things"
 
 apt-get install --yes --quiet network-manager net-tools libatomic1
 
+# set NetworkManager as the renderer in cloud-init
 sed -i '/version: 2/a\ \ renderer: NetworkManager' /boot/network-config
 grep 'renderer' /boot/network-config
 
+# set the hostname in cloud-init
 sed -i 's/#hostname:.*/hostname: photonvision/' /boot/user-data
 grep 'hostname:' /boot/user-data
 
-# command to disable cloud-init after first boot
+# add run command to disable cloud-init after first boot
 sed -i '$a\\nruncmd:\n- [ touch, /etc/cloud/cloud-init.disabled ]' /boot/user-data
 tail /boot/user-data
 
+# modify photonvision.service to wait for the network before starting
+# this helps ensure that photonvision detects the network the first time it starts
 sed -i '/Description/aAfter=network-online.target' /etc/systemd/system/photonvision.service
 sed -i 's/-n$//' /etc/systemd/system/photonvision.service
 cat /etc/systemd/system/photonvision.service
@@ -70,10 +74,6 @@ systemctl disable systemd-networkd-wait-online.service
 
 apt-get install --yes --quiet libc6 libstdc++6
 
-# cat > /etc/netplan/00-default-nm-renderer.yaml <<EOF
-# network:
-#   renderer: NetworkManager
-# EOF
 
 if [ $(cat /etc/lsb-release | grep -c "24.04") -gt 0 ]; then
     # add jammy to apt sources 
