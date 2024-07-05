@@ -11,6 +11,7 @@ echo "pi:raspberry" | chpasswd
 
 apt-get update --quiet
 
+before=$(df --output=used / | tail -n1)
 # clean up stuff
 echo 'Purging snaps'
 # get rid of snaps
@@ -23,6 +24,11 @@ apt-get purge --yes --quiet snapd
 apt-get purge --yes --quiet bluez
 
 apt-get --yes --quiet autoremove
+
+after=$(df --output=used / | tail -n1)
+freed=$before - $after
+
+echo "Freed up $freed bytes"
 
 # run Photonvision install script
 wget https://git.io/JJrEP -O install.sh
