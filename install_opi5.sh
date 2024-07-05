@@ -23,6 +23,8 @@ apt-get purge --yes --quiet snapd
 # remove bluetooth daemon
 apt-get purge --yes --quiet bluez
 
+# apt-get remove -y gdb gcc g++ linux-headers* libgcc*-dev
+
 apt-get --yes --quiet autoremove
 
 after=$(df --output=used / | tail -n1)
@@ -39,14 +41,6 @@ sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=0-7/g' install.sh
 ./install.sh -n -q
 rm install.sh
 
-
-# Remove extra packages 
-# echo "Purging extra things"
-# apt-get remove -y gdb gcc g++ linux-headers* libgcc*-dev
-# apt-get remove -y snapd
-# apt-get autoremove -y
-
-
 echo "Installing additional things"
 
 apt-get install --yes --quiet network-manager net-tools libatomic1
@@ -62,6 +56,13 @@ grep 'hostname:' /boot/user-data
 # add run command to disable cloud-init after first boot
 sed -i '$a\\nruncmd:\n- [ touch, /etc/cloud/cloud-init.disabled ]' /boot/user-data
 tail /boot/user-data
+
+# tell NetworkManager not to wait for the carrier on ethernet, which can delay boot
+# when the coprocessor isn't connected to the ethernet
+cat > /etc/ <<EOF
+[main]
+ignore-carrier=*
+EOF
 
 # modify photonvision.service to wait for the network before starting
 # this helps ensure that photonvision detects the network the first time it starts
