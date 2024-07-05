@@ -1,7 +1,4 @@
 
-pwd
-ls -l
-
 # Create pi/raspberry login
 if id "$1" >/dev/null 2>&1; then
     echo 'user found'
@@ -25,6 +22,7 @@ apt-get purge --yes --quiet snapd
 
 # remove bluetooth daemon
 apt-get purge --yes --quiet bluez
+
 
 # apt-get remove -y gdb gcc g++ linux-headers* libgcc*-dev
 
