@@ -50,6 +50,9 @@ jobs:
         bind_mount_repository: true
         base_image: ${{ matrix.base_image }}
         commands: |
+          mount -l
+          lsblk
+          df
           chmod +x ${{matrix.script}}
           ${{ matrix.script }}
 
