@@ -51,6 +51,10 @@ grep 'renderer' /boot/network-config
 sed -i 's/#hostname:.*/hostname: photonvision/' /boot/user-data
 grep 'hostname' /boot/user-data
 
+sed -i '/Description/aAfter=network-online.target' /etc/systemd/system/photonvision.service
+sed -i 's/-n$//' /etc/systemd/system/photonvision.service
+cat /etc/systemd/system/photonvision.service
+
 # systemctl disable NetworkManager-wait-online.service
 systemctl disable systemd-networkd-wait-online.service
 
