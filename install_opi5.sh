@@ -23,9 +23,6 @@ apt-get purge --yes --quiet snapd
 # remove bluetooth daemon
 apt-get purge --yes --quiet bluez
 
-
-# apt-get remove -y gdb gcc g++ linux-headers* libgcc*-dev
-
 apt-get --yes --quiet autoremove
 
 after=$(df --output=used / | tail -n1)
@@ -89,7 +86,7 @@ apt-get install --yes --quiet libcholmod3 liblapack3 libsuitesparseconfig5
 
 
 rm -rf /var/lib/apt/lists/*
-apt-get --yes --quiet autoclean
+apt-get --yes --quiet clean
 
 rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
