@@ -46,7 +46,7 @@ sudo apt-get update
 apt-get install --yes --quiet network-manager net-tools libatomic1
 
 sed -i '/version: 2/a\ \ renderer: NetworkManager' /boot/network-config
-grep 'renderer' /root/network-config
+grep 'renderer' /boot/network-config
 
 # systemctl disable NetworkManager-wait-online.service
 # systemctl disable systemd-networkd-wait-online.service
