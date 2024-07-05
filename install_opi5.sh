@@ -46,9 +46,8 @@ echo "Installing additional things"
 
 apt-get install --yes --quiet network-manager net-tools libatomic1
 
-# set NetworkManager as the renderer in cloud-init
-sed -i '/version: 2/a\ \ renderer: NetworkManager' /boot/network-config
-grep 'renderer' /boot/network-config
+# set NetworkManager as the renderer in cloud-init and static ip
+cp -f ./OPi5_CIDATA/network-config /boot/network-config
 
 # set the hostname in cloud-init
 sed -i 's/#hostname:.*/hostname: photonvision/' /boot/user-data
