@@ -26,7 +26,7 @@ apt-get purge --yes --quiet bluez
 apt-get --yes --quiet autoremove
 
 after=$(df --output=used / | tail -n1)
-freed=$before - $after
+freed=$(( before - after ))
 
 echo "Freed up $freed bytes"
 
@@ -55,7 +55,7 @@ sed -i '/version: 2/a\ \ renderer: NetworkManager' /boot/network-config
 grep 'renderer' /boot/network-config
 
 sed -i 's/#hostname:.*/hostname: photonvision/' /boot/user-data
-grep 'hostname' /boot/user-data
+grep 'hostname:' /boot/user-data
 
 # command to disable cloud-init after first boot
 sed -i '$a\\nruncmd:\n- [ touch, /etc/cloud/cloud-init.disabled ]' /boot/user-data
