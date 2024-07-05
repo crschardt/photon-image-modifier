@@ -57,6 +57,10 @@ grep 'renderer' /boot/network-config
 sed -i 's/#hostname:.*/hostname: photonvision/' /boot/user-data
 grep 'hostname' /boot/user-data
 
+# command to disable cloud-init after first boot
+sed -i '$a\\nruncmd:\n- [ touch, /etc/cloud/cloud-init.disabled ]' /boot/user-data
+tail /boot/user-data
+
 sed -i '/Description/aAfter=network-online.target' /etc/systemd/system/photonvision.service
 sed -i 's/-n$//' /etc/systemd/system/photonvision.service
 cat /etc/systemd/system/photonvision.service
