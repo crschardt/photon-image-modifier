@@ -18,7 +18,13 @@
 
 network:
   version: 2
+  renderer: NetworkManager
   ethernets:
+    end1:
+      dhcp4: true
+      dhcp6: false
+      addresses:
+      - 192.0.2.2/24
     zz-all-en:
       match:
         name: "en*"
