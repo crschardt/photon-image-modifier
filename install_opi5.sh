@@ -52,7 +52,7 @@ sed -i 's/#hostname:.*/hostname: photonvision/' /boot/user-data
 grep 'hostname' /boot/user-data
 
 # systemctl disable NetworkManager-wait-online.service
-# systemctl disable systemd-networkd-wait-online.service
+systemctl disable systemd-networkd-wait-online.service
 
 apt-get install --yes --quiet libc6 libstdc++6
 
