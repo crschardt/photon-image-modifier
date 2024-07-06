@@ -33,6 +33,9 @@ jobs:
           - name: opi5plus
             script: ./install_opi5.sh
             base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.1.0/ubuntu-24.04-preinstalled-server-arm64-orangepi-5-plus.img.xz
+          - name: opi5pro
+            script: ./install_opi5.sh
+            base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.1.0/ubuntu-24.04-preinstalled-server-arm64-orangepi-5-pro.img.xz
 
     name: "Build for ${{ matrix.name }}"
 
