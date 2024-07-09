@@ -25,7 +25,7 @@ systemctl enable pigpiod
 
 # Remove extra packages too
 echo "Purging extra things"
-apt-get purge -y gdb gcc g++ linux-headers* libgcc*-dev
+apt-get purge -y gdb gcc g++ linux-headers* libgcc*-dev device-tree-compiler
 apt-get autoremove -y
 
 echo "Installing additional things"
