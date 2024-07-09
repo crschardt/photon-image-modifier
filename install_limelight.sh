@@ -26,6 +26,8 @@ systemctl daemon-reload
 systemctl enable ssh
 systemctl enable pigpiod
 
+apt-mark manual raspberrypi-sys-mods
+
 # Remove extra packages too
 echo "Purging extra things"
 apt-get purge -y python3 gdb gcc g++ linux-headers* libgcc*-dev libqt* wpasupplicant wireless-tools firmware-atheros firmware-brcm80211 firmware-libertas firmware-misc-nonfree firmware-realtek raspberrypi-net-mods device-tree-compiler
