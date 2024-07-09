@@ -22,11 +22,11 @@ systemctl daemon-reload
 systemctl enable ssh
 systemctl enable pigpiod
 
-apt-mark manual raspberrypi-sys-mods
 
 # Remove extra packages too
 echo "Purging extra things"
-apt-get purge -y python3 gdb gcc g++ linux-headers* libgcc*-dev device-tree-compiler
+apt-get purge -y python3 gdb gcc g++ linux-headers* libgcc*-dev
+apt-mark manual raspberrypi-sys-mods
 apt-get autoremove -y
 
 echo "Installing additional things"
