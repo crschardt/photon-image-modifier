@@ -33,7 +33,7 @@ apt-get autoremove -y
 
 echo "Installing additional things"
 sudo apt-get update
-apt-get install -y pigpiod pigpio device-tree-compiler libraspberrypi-bin
+apt-get install -y pigpiod pigpio device-tree-compiler
 apt-get install -y network-manager
 apt-get install -y net-tools
 # libcamera-driver stuff
