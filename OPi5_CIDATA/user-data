@@ -26,10 +26,10 @@ users:
 # On first boot, set the (default) ubuntu user's password to "ubuntu" and
 # expire user passwords
 chpasswd:
-  expire: true
+  expire: false
   users:
   - name: ubuntu
-    password: ubuntu
+    password: photon
     type: text
 
 ## Set the system's hostname. Please note that, unless you have a local DNS
@@ -37,7 +37,7 @@ chpasswd:
 ## setting the hostname here will not make the machine reachable by this name.
 ## You may also wish to install avahi-daemon (see the "packages:" key below)
 ## to make your machine reachable by the .local domain
-#hostname: ubuntu
+hostname: photonvision
 
 ## Set up the keyboard layout. See localectl(1), in particular the various
 ## list-x11-* sub-commands, to determine the available models, layouts,
@@ -113,3 +113,6 @@ ssh_pwauth: true
 #- [ ls, -l, / ]
 #- [ sh, -xc, "echo $(date) ': hello world!'" ]
 #- [ wget, "http://ubuntu.com", -O, /run/mydir/index.html ]
+
+runcmd:
+- [ touch, /etc/cloud/cloud-init.disabled ]

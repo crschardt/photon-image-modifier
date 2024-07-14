@@ -46,13 +46,15 @@ apt-get install --yes --quiet network-manager net-tools libatomic1
 # set NetworkManager as the renderer in cloud-init and static ip
 cp -f ./OPi5_CIDATA/network-config /boot/network-config
 
+cp -f ./OPi5_CIDATA/user-data /boot/user-data
+
 # set the hostname in cloud-init
-sed -i 's/#hostname:.*/hostname: photonvision/' /boot/user-data
-grep 'hostname:' /boot/user-data
+# sed -i 's/#hostname:.*/hostname: photonvision/' /boot/user-data
+# grep 'hostname:' /boot/user-data
 
 # add run command to disable cloud-init after first boot
-sed -i '$a\\nruncmd:\n- [ touch, /etc/cloud/cloud-init.disabled ]' /boot/user-data
-tail /boot/user-data
+# sed -i '$a\\nruncmd:\n- [ touch, /etc/cloud/cloud-init.disabled ]' /boot/user-data
+# tail /boot/user-data
 
 # tell NetworkManager not to wait for the carrier on ethernet, which can delay boot
 # when the coprocessor isn't connected to the ethernet
