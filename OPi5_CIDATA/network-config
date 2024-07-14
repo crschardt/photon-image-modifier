@@ -19,18 +19,18 @@
 network:
   version: 2
   renderer: NetworkManager
-  # ethernets:
-  #   zz-all-en:
-  #     match:
-  #       name: "en*"
-  #     dhcp4: true
-  #     dhcp6: false
-  #     link-local: [ ipv4 ]
-  #     optional: true
-  #     networkmanager:
-  #       passthrough:
-  #         ipv4.link-local: "enabled"
-  #         ipv6.method: "disabled"
+  ethernets:
+    zz-all-en:
+      match:
+        name: "en*"
+      dhcp4: true
+      # dhcp6: false
+      # link-local: [ ipv4 ]
+      # optional: true
+      networkmanager:
+        passthrough:
+          # ipv4.link-local: "enabled"
+          ipv6.method: "link-local"
   #   zz-all-eth:
   #     match:
   #       name: "eth*"
