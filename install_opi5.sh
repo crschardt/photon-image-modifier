@@ -72,6 +72,9 @@ cat /etc/systemd/system/photonvision.service
 # systemctl disable NetworkManager-wait-online.service
 systemctl disable systemd-networkd-wait-online.service
 
+# the bluetooth service isn't needed and causes a delay at boot
+systemctl disable ap6275p-bluetooth.service
+
 apt-get install --yes --quiet libc6 libstdc++6
 
 
