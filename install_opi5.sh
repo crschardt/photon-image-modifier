@@ -69,7 +69,7 @@ sed -i '/Description/aAfter=network-online.target' /etc/systemd/system/photonvis
 sed -i 's/-n$//' /etc/systemd/system/photonvision.service
 cat /etc/systemd/system/photonvision.service
 
-# systemctl disable NetworkManager-wait-online.service
+systemctl disable NetworkManager-wait-online.service
 # systemctl disable systemd-networkd-wait-online.service
 
 # the bluetooth service isn't needed and causes a delay at boot
