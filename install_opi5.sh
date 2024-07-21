@@ -61,10 +61,11 @@ cp -f ./OPi5_CIDATA/user-data /boot/user-data
 
 # modify photonvision.service to wait for the network before starting
 # this helps ensure that photonvision detects the network the first time it starts
+# but it may cause a startup delay if the coprocessor isn't connected to a network
 sed -i '/Description/aAfter=network-online.target' /etc/systemd/system/photonvision.service
 cat /etc/systemd/system/photonvision.service
 
-systemctl disable NetworkManager-wait-online.service
+# networkd isn't being used, this causes an unnecessary delay
 systemctl disable systemd-networkd-wait-online.service
 
 # the bluetooth service isn't needed and causes a delay at boot
