@@ -36,25 +36,21 @@ chmod +x install.sh
 
 sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=0-7/g' install.sh
 
-./install.sh -n -q
+./install.sh -m -q
 rm install.sh
 
 echo "Installing additional things"
 
 apt-get install --yes --quiet network-manager net-tools libatomic1
 
-# set NetworkManager as the renderer in cloud-init and static ip
+# let netplan create the config during cloud-init
+rm -f /etc/netplan/00-default-nm-renderer.yaml
+
+# set NetworkManager as the renderer in cloud-init
 cp -f ./OPi5_CIDATA/network-config /boot/network-config
 
+# add customized user-data file for cloud-init
 cp -f ./OPi5_CIDATA/user-data /boot/user-data
-
-# set the hostname in cloud-init
-# sed -i 's/#hostname:.*/hostname: photonvision/' /boot/user-data
-# grep 'hostname:' /boot/user-data
-
-# add run command to disable cloud-init after first boot
-# sed -i '$a\\nruncmd:\n- [ touch, /etc/cloud/cloud-init.disabled ]' /boot/user-data
-# tail /boot/user-data
 
 # tell NetworkManager not to wait for the carrier on ethernet, which can delay boot
 # when the coprocessor isn't connected to the ethernet
@@ -66,7 +62,6 @@ cp -f ./OPi5_CIDATA/user-data /boot/user-data
 # modify photonvision.service to wait for the network before starting
 # this helps ensure that photonvision detects the network the first time it starts
 sed -i '/Description/aAfter=network-online.target' /etc/systemd/system/photonvision.service
-sed -i 's/-n$//' /etc/systemd/system/photonvision.service
 cat /etc/systemd/system/photonvision.service
 
 systemctl disable NetworkManager-wait-online.service
@@ -76,7 +71,6 @@ systemctl disable NetworkManager-wait-online.service
 systemctl disable ap6275p-bluetooth.service
 
 apt-get install --yes --quiet libc6 libstdc++6
-
 
 if [ $(cat /etc/lsb-release | grep -c "24.04") -gt 0 ]; then
     # add jammy to apt sources 
