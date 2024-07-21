@@ -20,37 +20,21 @@ network:
   version: 2
   renderer: NetworkManager
   ethernets:
-    end1:
-      dhcp4: true
-      dhcp6: false
-      addresses:
-      - 192.0.2.2/24
     zz-all-en:
+      renderer: NetworkManager
       match:
         name: "en*"
       dhcp4: true
-      optional: true
-    zz-all-eth:
-      match:
-        name: "eth*"
-      dhcp4: true
-      optional: true
+      link-local: 
+      - ipv4 
+      networkmanager:
+        passthrough:
+          ipv4.dhcp-timeout: "2147483647"
+          ipv4.link-local: "3"
+          ipv6.method: "disabled"
+  #   zz-all-eth:
+  #     match:
+  #       name: "eth*"
+  #     dhcp4: true
+  #     optional: true
 
-#  wifis:
-#    wlan0:
-#      dhcp4: true
-#      optional: true
-#      access-points:
-#        myhomewifi:
-#          password: "S3kr1t"
-#        myworkwifi:
-#          password: "correct battery horse staple"
-#        workssid:
-#          auth:
-#            key-management: eap
-#            method: peap
-#            identity: "me@example.com"
-#            password: "passw0rd"
-#            ca-certificate: /etc/my_ca.pem
-
-#      regulatory-domain: GB
