@@ -6,6 +6,8 @@ else
     echo "creating pi user"
     useradd pi -m -b /home -s /bin/bash
     usermod -a -G sudo pi
+    echo 'pi ALL=(ALL) NOPASSWD: ALL' | tee -a /etc/sudoers.d/010_pi-nopasswd >/dev/null
+    chmod 0440 /etc/sudoers.d/010_pi-nopasswd
 fi
 echo "pi:raspberry" | chpasswd
 
