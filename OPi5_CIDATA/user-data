@@ -26,10 +26,10 @@ users:
 # On first boot, set the (default) ubuntu user's password to "ubuntu" and
 # expire user passwords
 chpasswd:
-  expire: false
+  expire: true
   users:
   - name: ubuntu
-    password: photon
+    password: ubuntu
     type: text
 
 ## Set the system's hostname. Please note that, unless you have a local DNS

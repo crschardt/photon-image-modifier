@@ -25,16 +25,11 @@ network:
       match:
         name: "en*"
       dhcp4: true
-      link-local: 
-      - ipv4 
-      networkmanager:
-        passthrough:
-          ipv4.dhcp-timeout: "2147483647"
-          ipv4.link-local: "3"
-          ipv6.method: "disabled"
-  #   zz-all-eth:
-  #     match:
-  #       name: "eth*"
-  #     dhcp4: true
-  #     optional: true
+      optional: true
+    zz-all-eth:
+      renderer: NetworkManager
+      match:
+        name: "eth*"
+      dhcp4: true
+      optional: true
 
