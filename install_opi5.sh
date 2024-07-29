@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 
 # Create pi/raspberry login
 if id "$1" >/dev/null 2>&1; then
@@ -9,7 +11,7 @@ else
 fi
 echo "pi:raspberry" | chpasswd
 
-apt-get update --quiet
+apt-get -q update
 
 before=$(df --output=used / | tail -n1)
 # clean up stuff
@@ -17,13 +19,13 @@ echo 'Purging snaps'
 # get rid of snaps
 rm -rf /var/lib/snapd/seed/snaps/*
 rm -f /var/lib/snapd/seed/seed.yaml
-apt-get purge --yes --quiet lxd-installer lxd-agent-loader
-apt-get purge --yes --quiet snapd
+apt-get -y -q purge lxd-installer lxd-agent-loader
+apt-get -y -qq purge snapd
 
 # remove bluetooth daemon
-apt-get purge --yes --quiet bluez
+apt-get -y -qq purge bluez
 
-apt-get --yes --quiet autoremove
+apt-get -y -qq autoremove
 
 after=$(df --output=used / | tail -n1)
 freed=$(( before - after ))
@@ -41,7 +43,7 @@ rm install.sh
 
 echo "Installing additional things"
 
-apt-get install --yes --quiet network-manager net-tools libatomic1
+apt-get -y -q install network-manager net-tools libatomic1
 
 # let netplan create the config during cloud-init
 rm -f /etc/netplan/00-default-nm-renderer.yaml
@@ -71,7 +73,7 @@ systemctl disable systemd-networkd-wait-online.service
 # the bluetooth service isn't needed and causes a delay at boot
 systemctl disable ap6275p-bluetooth.service
 
-apt-get install --yes --quiet libc6 libstdc++6
+apt-get -y -q install libc6 libstdc++6
 
 if [ $(cat /etc/lsb-release | grep -c "24.04") -gt 0 ]; then
     # add jammy to apt sources 
@@ -79,14 +81,14 @@ if [ $(cat /etc/lsb-release | grep -c "24.04") -gt 0 ]; then
     add-apt-repository -y -S 'deb http://ports.ubuntu.com/ubuntu-ports jammy main universe'
 fi
 
-apt-get --quiet update
+apt-get -q update
 
 # mrcal stuff
-apt-get install --yes --quiet libcholmod3 liblapack3 libsuitesparseconfig5
+apt-get -y -q install libcholmod3 liblapack3 libsuitesparseconfig5
 
 
 rm -rf /var/lib/apt/lists/*
-apt-get --yes --quiet clean
+apt-get -y -q clean
 
 rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
