@@ -20,12 +20,12 @@ echo 'Purging snaps'
 rm -rf /var/lib/snapd/seed/snaps/*
 rm -f /var/lib/snapd/seed/seed.yaml
 apt-get -y -q purge lxd-installer lxd-agent-loader
-apt-get -y -qq purge snapd
+apt-get -y -q purge snapd
 
 # remove bluetooth daemon
-apt-get -y -qq purge bluez
+apt-get -y -q purge bluez
 
-apt-get -y -qq autoremove
+apt-get -y -q autoremove
 
 after=$(df --output=used / | tail -n1)
 freed=$(( before - after ))
