@@ -57,7 +57,7 @@ jobs:
         base_image: ${{ matrix.base_image }}
         commands: |
           echo "******** base model ********"
-          cat /sys/firmware/devicetree/base/model
+          cat /etc/*-release
           echo "****************************"
           chmod +x ${{matrix.script}}
           ${{ matrix.script }}
