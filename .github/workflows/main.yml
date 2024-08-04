@@ -56,6 +56,9 @@ jobs:
         bind_mount_repository: true
         base_image: ${{ matrix.base_image }}
         commands: |
+          echo "******** base model ********"
+          cat /sys/firmware/devicetree/base/model
+          echo "****************************"
           chmod +x ${{matrix.script}}
           ${{ matrix.script }}
 
