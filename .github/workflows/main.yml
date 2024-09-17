@@ -97,7 +97,14 @@ jobs:
       - uses: softprops/action-gh-release@v2.0.8
         with:
           files: |
-            **/*.xz
+            **/*opi5*.xz
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: softprops/action-gh-release@v2.0.8
+        with:
+          files: |
+            !**/*opi5*.xz
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
