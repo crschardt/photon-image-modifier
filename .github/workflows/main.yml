@@ -6,14 +6,9 @@ on:
       - 'v*'
   pull_request:
     branches: [ master ]
-  env:
-    # jr_image_path: 'https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download'
-    jr_image_version: 'v2.4.0'
+
 jobs:
   build:
-    env:
-      # jr_image_path: 'https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download'
-      jr_image_version: 'v2.4.0'
     runs-on: ubuntu-latest
 
     strategy:
@@ -37,7 +32,7 @@ jobs:
           #   base_image: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
           - name: opi5
             script: ./install_opi5.sh
-            base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/${{ env.jr_image_version }}/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz
+            base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.4.0/ubuntu-24.04-preinstalled-server-arm64-orangepi-5.img.xz
           # - name: opi5b
           #   script: ./install_opi5.sh
           #   base_image: https://github.com/Joshua-Riek/ubuntu-rockchip/releases/download/v2.3.0/ubuntu-24.04-preinstalled-server-arm64-orangepi-5b.img.xz
