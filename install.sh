@@ -156,7 +156,6 @@ while getopts "hlv:a:mnqt-:" OPT; do
       ;;
     m | install-nm)
       INSTALL_NETWORK_MANAGER="$(echo "${OPTARG:-yes}" | tr '[:upper:]' '[:lower:]')"
-      echo "$INSTALL_NETWORK_MANAGER"
       case "$INSTALL_NETWORK_MANAGER" in
         yes)
           ;;
