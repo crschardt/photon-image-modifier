@@ -115,6 +115,9 @@ Syntax: sudo ./install.sh [options]
   -q, --quiet
       Silent install, automatically accepts all defaults. For
       non-interactive use. Makes -m,--install-nm default to "no".
+  -t, --test
+      Run in test mode. All actions that make chnages to the system
+      are suppressed.
 
 EOF
 }
