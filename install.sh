@@ -50,23 +50,6 @@ install_if_missing() {
   debug "$1 installation complete."
 }
 
-get_photonvision_releases() {
-  # Return cached input
-  if [ -n "$PHOTON_VISION_RELEASES" ] ; then
-    echo "$PHOTON_VISION_RELEASES"
-    return
-  fi
-
-  # Use curl if available, otherwise fallback to wget
-  if command -v curl > /dev/null 2>&1 ; then
-    PHOTON_VISION_RELEASES="$(curl -sk https://api.github.com/repos/photonvision/photonvision/releases)"
-  else
-    PHOTON_VISION_RELEASES="$(wget -qO- https://api.github.com/repos/photonvision/photonvision/releases)"
-  fi
-
-  echo "$PHOTON_VISION_RELEASES"
-}
-
 get_versions() {
   PHOTON_VISION_RELEASES="$(wget -qO- https://api.github.com/repos/photonvision/photonvision/releases?per_page=$1)"
 
@@ -185,6 +168,8 @@ while getopts "hlv:a:mnqt-:" OPT; do
   esac
 done
 
+debug "This is the installation script for PhotonVision."
+
 if [[ "$(id -u)" != "0" && -z $TEST ]]; then
    die "This script must be run as root"
 fi
@@ -212,7 +197,6 @@ else
   "Run './install.sh -h' for more information."
 fi
 
-debug "This is the installation script for PhotonVision."
 debug "Installing for platform $ARCH"
 
 # make sure that we are downloading a valid version
@@ -278,7 +262,7 @@ if [[ -z $TEST ]]; then
 fi
 
 if [[ "$INSTALL_NETWORK_MANAGER" == "yes" ]]; then
-  debug "NetworkManager installation specified. Installing components..."
+  debug "NetworkManager installation requested. Installing components..."
   install_if_missing network-manager
   install_if_missing net-tools
 
@@ -330,14 +314,12 @@ if [[ -z $TEST ]]; then
   # service --status-all doesn't list photonvision on OrangePi use systemctl instead:
   if [[ $(systemctl --quiet is-active photonvision) = "active" ]]; then
     debug "PhotonVision is already running. Stopping service."
-    if [[ -z $TEST ]]; then
     systemctl stop photonvision
     systemctl disable photonvision
     rm /lib/systemd/system/photonvision.service
     rm /etc/systemd/system/photonvision.service
     systemctl daemon-reload
     systemctl reset-failed
-    fi
   fi
 
   cat > /lib/systemd/system/photonvision.service <<EOF
