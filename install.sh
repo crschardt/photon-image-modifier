@@ -231,7 +231,7 @@ DOWNLOAD_URL=$(curl -sk "$RELEASE_URL" |
 
 if [[ -z $DOWNLOAD_URL ]] ; then
   die "PhotonVision '$VERSION' is not available for $ARCH_NAME!" \
-      "See ./install --list-versions for a complete list of available versions."
+      "See ./install --list-versions for a list of available versions."
 fi
 
 DISTRO=$(lsb_release -is)
@@ -311,7 +311,7 @@ install_if_missing libsuitesparseconfig5
 
 debug ""
 
-debug "Downloading PhotonVision '$VERSION' ..."
+debug "Downloading PhotonVision '$VERSION'..."
 
 if [[ -z $TEST ]]; then
   mkdir -p /opt/photonvision
