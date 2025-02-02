@@ -284,7 +284,11 @@ debug "Installing additional math packages"
 if [[ "$DISTRO" = "Ubuntu" && -z $(apt-cache search libcholmod3) ]]; then
   debug "Adding jammy to list of apt sources"
   if [[ -z $TEST ]]; then
-    add-apt-repository -y -S 'deb http://ports.ubuntu.com/ubuntu-ports jammy main universe'
+    if [[ "$ARCH" = "x86_64" ]]; then
+      add-apt-repository -y -S 'deb http://security.ubuntu.com/ubuntu jammy main universe'
+    else 
+      add-apt-repository -y -S 'deb http://ports.ubuntu.com/ubuntu-ports jammy main universe'
+    fi
   fi
 fi
 
