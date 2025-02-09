@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Verbose and exit on errors
-set -ex
+# Exit on errors
+set -e
 
 needs_arg() {
     if [ -z "$OPTARG" ]; then
@@ -20,7 +20,7 @@ die() {
 debug() {
   if [ -z "$QUIET" ] ; then
     for arg in "$@"; do
-      echo "$arg"
+      echo "$TEST$arg"
     done
   fi
 }
@@ -34,59 +34,30 @@ install_if_missing() {
     debug "Found existing $1. Skipping..."
     # Always mark our upstream apt deps as held back, which will prevent the package 
     # from being automatically installed, upgraded or removed
-    apt-mark manual "$1"
+    if [[ -z $TEST ]]; then
+      apt-mark manual "$1"
+    fi
     return
   fi
 
   debug "Installing $1..."
-  apt-get install --yes "$1"
-  # Always mark our upstream apt deps as held back, which will prevent the package 
-  # from being automatically installed, upgraded or removed
-  apt-mark manual "$1"
+  if [[ -z $TEST ]]; then
+    apt-get install --yes "$1"
+    # Always mark our upstream apt deps as held back, which will prevent the package 
+    # from being automatically installed, upgraded or removed
+    apt-mark manual "$1"
+  fi
   debug "$1 installation complete."
 }
 
-get_photonvision_releases() {
-  # Return cached input
-  if [ -n "$PHOTON_VISION_RELEASES" ] ; then
-    echo "$PHOTON_VISION_RELEASES"
-    return
-  fi
-
-  # Use curl if available, otherwise fallback to wget
-  if command -v curl > /dev/null 2>&1 ; then
-    PHOTON_VISION_RELEASES="$(curl -sk https://api.github.com/repos/photonvision/photonvision/releases)"
-  else
-    PHOTON_VISION_RELEASES="$(wget -qO- https://api.github.com/repos/photonvision/photonvision/releases)"
-  fi
-
-  echo "$PHOTON_VISION_RELEASES"
-}
-
 get_versions() {
-  if [ -z "$PHOTON_VISION_VERSIONS" ] ; then
-    PHOTON_VISION_VERSIONS=$(get_photonvision_releases | \
-      sed -En 's/\"tag_name\": \"v([0-9]+\.[0-9]+\.[0-9]+)(-(beta|alpha)(-[0-9])?(\.[0-9]+)?)?\",/\1\2/p' | \
-      sed 's/^[[:space:]]*//')
-  fi
+  PHOTON_VISION_RELEASES="$(wget -qO- https://api.github.com/repos/photonvision/photonvision/releases?per_page=$1)"
 
+  PHOTON_VISION_VERSIONS=$(get_photonvision_releases | \
+    sed -En 's/\"tag_name\": \"(.+)\",/\1/p' | \
+    sed 's/^[[:space:]]*//'
+  )
   echo "$PHOTON_VISION_VERSIONS"
-}
-
-is_version_available() {
-  local target_version="$1"
-
-  # latest is a special case
-  if [ "$target_version" = "latest" ]; then
-    return 0
-  fi
-
-  # Check if multiple lines are match. You can only match 1.
-  if [ "$(get_versions | grep -cFx "$target_version")" -ne 1 ] ; then
-    return 1
-  fi
-
-  return 0
 }
 
 is_chroot() {
@@ -106,12 +77,13 @@ Syntax: sudo ./install.sh [options]
   options:
   -h, --help
       Display this help message.
-  -l, --list-versions
-      Lists all available versions of PhotonVision.
+  -l [count], --list-versions=[count]
+      Lists the most recent versions of PhotonVision.
+      Count: Number of recent versions to show, max value is 100.
+      Default: 30
   -v <version>, --version=<version>
       Specifies which version of PhotonVision to install.
       If not specified, the latest stable release is installed.
-      Ignores leading 'v's.
   -a <arch>, --arch=<arch>
       Install PhotonVision for the specified architecture.
       Supported values: aarch64, x86_64
@@ -126,6 +98,9 @@ Syntax: sudo ./install.sh [options]
   -q, --quiet
       Silent install, automatically accepts all defaults. For
       non-interactive use. Makes -m,--install-nm default to "no".
+  -t, --test
+      Run in test mode. All actions that make chnages to the system
+      are suppressed.
 
 EOF
 }
@@ -133,11 +108,17 @@ EOF
 INSTALL_NETWORK_MANAGER="ask"
 VERSION="latest"
 
-while getopts "hlv:a:mnq-:" OPT; do
+while getopts "hlv:a:mnqt-:" OPT; do
   if [ "$OPT" = "-" ]; then
     OPT="${OPTARG%%=*}"       # extract long option name
     OPTARG="${OPTARG#"$OPT"}" # extract long option argument (may be empty)
     OPTARG="${OPTARG#=}"      # if long option argument, remove assigning `=`
+  else
+    nextopt=${!OPTIND}        # check for an optional argument followinng a short option
+    if [[ -n $nextopt && $nextopt != -* ]]; then
+      OPTIND=$((OPTIND + 1))
+      OPTARG=$nextopt
+    fi
   fi
 
   case "$OPT" in
@@ -146,17 +127,18 @@ while getopts "hlv:a:mnq-:" OPT; do
       exit 0
       ;;
     l | list-versions)
-      get_versions
+      COUNT=${OPTARG:-30}
+      get_versions "$COUNT"
       exit 0
       ;;
     v | version)
       needs_arg
-      VERSION=${OPTARG#v}  # drop leading 'v's
+      VERSION=${OPTARG}
       ;;
     a | arch) needs_arg; ARCH=$OPTARG
       ;;
     m | install-nm)
-      INSTALL_NETWORK_MANAGER="$(echo "${OPTARG:-'yes'}" | tr '[:upper:]' '[:lower:]')"
+      INSTALL_NETWORK_MANAGER="$(echo "${OPTARG:-yes}" | tr '[:upper:]' '[:lower:]')"
       case "$INSTALL_NETWORK_MANAGER" in
         yes)
           ;;
@@ -173,6 +155,8 @@ while getopts "hlv:a:mnq-:" OPT; do
       ;;
     q | quiet) QUIET="true"
       ;;
+    t | test) TEST="[TEST]:"
+      ;;
     \?)  # Handle invalid short options
       die "Error: Invalid option -$OPTARG" \
           "See './install.sh -h' for more information."
@@ -184,7 +168,9 @@ while getopts "hlv:a:mnq-:" OPT; do
   esac
 done
 
-if [ "$(id -u)" != "0" ]; then
+debug "This is the installation script for PhotonVision."
+
+if [[ "$(id -u)" != "0" && -z $TEST ]]; then
    die "This script must be run as root"
 fi
 
@@ -211,8 +197,25 @@ else
   "Run './install.sh -h' for more information."
 fi
 
-debug "This is the installation script for PhotonVision."
 debug "Installing for platform $ARCH"
+
+# make sure that we are downloading a valid version
+if [ "$VERSION" = "latest" ] ; then
+  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/latest"
+else
+  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/$VERSION"
+fi
+
+DOWNLOAD_URL=$(curl -sk "$RELEASE_URL" |
+                  grep "browser_download_url.*$ARCH_NAME.jar" |
+                  cut -d : -f 2,3 |
+                  tr -d '"'
+              )
+
+if [[ -z $DOWNLOAD_URL ]] ; then
+  die "PhotonVision '$VERSION' is not available for $ARCH_NAME!" \
+      "See ./install --list-versions for a list of available versions."
+fi
 
 DISTRO=$(lsb_release -is)
 
@@ -236,7 +239,9 @@ if [[ "$INSTALL_NETWORK_MANAGER" == "ask" ]]; then
 fi
 
 debug "Updating package list..."
-apt-get update
+if [[ -z $TEST ]]; then
+  apt-get update
+fi
 debug "Updated package list."
 
 install_if_missing curl
@@ -248,33 +253,43 @@ install_if_missing sqlite3
 install_if_missing openjdk-17-jre-headless
 
 debug "Setting cpufrequtils to performance mode"
-if [ -f /etc/default/cpufrequtils ]; then
-    sed -i -e 's/^#\?GOVERNOR=.*$/GOVERNOR=performance/' /etc/default/cpufrequtils
-else
-    echo 'GOVERNOR=performance' > /etc/default/cpufrequtils
+if [[ -z $TEST ]]; then
+  if [ -f /etc/default/cpufrequtils ]; then
+      sed -i -e 's/^#\?GOVERNOR=.*$/GOVERNOR=performance/' /etc/default/cpufrequtils
+  else
+      echo 'GOVERNOR=performance' > /etc/default/cpufrequtils
+  fi
 fi
 
 if [[ "$INSTALL_NETWORK_MANAGER" == "yes" ]]; then
-  debug "NetworkManager installation specified. Installing components..."
+  debug "NetworkManager installation requested. Installing components..."
   install_if_missing network-manager
   install_if_missing net-tools
 
   debug "Configuring..."
-  systemctl disable systemd-networkd-wait-online.service
-  if [[ -d /etc/netplan/ ]]; then
-    cat > /etc/netplan/00-default-nm-renderer.yaml <<EOF
+  if [[ -z $TEST ]]; then
+    systemctl disable systemd-networkd-wait-online.service
+    if [[ -d /etc/netplan/ ]]; then
+      cat > /etc/netplan/00-default-nm-renderer.yaml <<EOF
 network:
   renderer: NetworkManager
 EOF
+    fi
+    debug "network-manager installation complete."
   fi
-  debug "network-manager installation complete."
 fi
 
 debug ""
 debug "Installing additional math packages"
 if [[ "$DISTRO" = "Ubuntu" && -z $(apt-cache search libcholmod3) ]]; then
   debug "Adding jammy to list of apt sources"
-  add-apt-repository -y -S 'deb http://ports.ubuntu.com/ubuntu-ports jammy main universe'
+  if [[ -z $TEST ]]; then
+    if [[ "$ARCH" = "x86_64" ]]; then
+      add-apt-repository -y -S 'deb http://security.ubuntu.com/ubuntu jammy main universe'
+    else 
+      add-apt-repository -y -S 'deb http://ports.ubuntu.com/ubuntu-ports jammy main universe'
+    fi
+  fi
 fi
 
 install_if_missing libcholmod3
@@ -283,42 +298,35 @@ install_if_missing libsuitesparseconfig5
 
 debug ""
 
-if ! is_version_available "$VERSION" ; then
-  die "PhotonVision v$VERSION is not available" \
-      "See ./install --list-versions for a complete list of available versions."
-fi
+debug "Downloading PhotonVision '$VERSION'..."
 
-if [ "$VERSION" = "latest" ] ; then
-  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/latest"
-  debug "Downloading PhotonVision (latest)..."
-else
-  RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/v$VERSION"
-  debug "Downloading PhotonVision (v$VERSION)..."
+if [[ -z $TEST ]]; then
+  mkdir -p /opt/photonvision
+  cd /opt/photonvision || die "Tried to enter /opt/photonvision, but it was not created."
+  curl -sk "$RELEASE_URL" |
+      grep "browser_download_url.*$ARCH_NAME.jar" |
+      cut -d : -f 2,3 |
+      tr -d '"' |
+      wget -qi - -O photonvision.jar
 fi
-
-mkdir -p /opt/photonvision
-cd /opt/photonvision || die "Tried to enter /opt/photonvision, but it was not created."
-curl -sk "$RELEASE_URL" |
-    grep "browser_download_url.*$ARCH_NAME.jar" |
-    cut -d : -f 2,3 |
-    tr -d '"' |
-    wget -qi - -O photonvision.jar
 debug "Downloaded PhotonVision."
 
 debug "Creating the PhotonVision systemd service..."
 
-# service --status-all doesn't list photonvision on OrangePi use systemctl instead:
-if [[ $(systemctl --quiet is-active photonvision) = "active" ]]; then
-  debug "PhotonVision is already running. Stopping service."
-  systemctl stop photonvision
-  systemctl disable photonvision
-  rm /lib/systemd/system/photonvision.service
-  rm /etc/systemd/system/photonvision.service
-  systemctl daemon-reload
-  systemctl reset-failed
-fi
 
-cat > /lib/systemd/system/photonvision.service <<EOF
+if [[ -z $TEST ]]; then
+  # service --status-all doesn't list photonvision on OrangePi use systemctl instead:
+  if [[ $(systemctl --quiet is-active photonvision) = "active" ]]; then
+    debug "PhotonVision is already running. Stopping service."
+    systemctl stop photonvision
+    systemctl disable photonvision
+    rm /lib/systemd/system/photonvision.service
+    rm /etc/systemd/system/photonvision.service
+    systemctl daemon-reload
+    systemctl reset-failed
+  fi
+
+  cat > /lib/systemd/system/photonvision.service <<EOF
 [Unit]
 Description=Service that runs PhotonVision
 
@@ -340,19 +348,20 @@ RestartSec=1
 WantedBy=multi-user.target
 EOF
 
-if [ "$DISABLE_NETWORKING" = "true" ]; then
-  sed -i "s/photonvision.jar/photonvision.jar -n/" /lib/systemd/system/photonvision.service
-fi
+  if [ "$DISABLE_NETWORKING" = "true" ]; then
+    sed -i "s/photonvision.jar/photonvision.jar -n/" /lib/systemd/system/photonvision.service
+  fi
 
-if grep -q "RK3588" /proc/cpuinfo; then
-  debug "This has a Rockchip RK3588, enabling big cores"
-  sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' /lib/systemd/system/photonvision.service
-fi
+  if grep -q "RK3588" /proc/cpuinfo; then
+    debug "This has a Rockchip RK3588, enabling big cores"
+    sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' /lib/systemd/system/photonvision.service
+  fi
 
-cp /lib/systemd/system/photonvision.service /etc/systemd/system/photonvision.service
-chmod 644 /etc/systemd/system/photonvision.service
-systemctl daemon-reload
-systemctl enable photonvision.service
+  cp /lib/systemd/system/photonvision.service /etc/systemd/system/photonvision.service
+  chmod 644 /etc/systemd/system/photonvision.service
+  systemctl daemon-reload
+  systemctl enable photonvision.service
+fi
 
 debug "Created PhotonVision systemd service."
 
