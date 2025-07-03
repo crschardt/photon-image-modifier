@@ -105,6 +105,11 @@ Syntax: sudo ./install.sh [options]
 EOF
 }
 
+# Exit with message if attempting to run on SystemCore
+if grep -iq "systemcore" /etc/os-release; then
+  die "This install script does not work on Systemcore."
+fi
+
 INSTALL_NETWORK_MANAGER="ask"
 VERSION="latest"
 
