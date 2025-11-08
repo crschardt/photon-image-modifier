@@ -17,9 +17,9 @@ ls
 #     dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
 # fi
 
-loopdev=$(losetup --find --show --partscan ${image})
+loopdev=$(losetup --find --show --partscan base_image.img)
 lsblk ${loopdev}
 
 losetup --detach "${loopdev}"
 
-printf '%s\n' "FINAL_IMAGE=${image}" >> "$GITHUB_ENV"
+printf '%s\n' "FINAL_IMAGE=base_image.img" >> "$GITHUB_ENV"
