@@ -76,7 +76,7 @@ jobs:
     - name: Install dependencies and build image
       run: |
           sudo chmod +x test.sh
-          sudo ./test.sh ${{ matrix.base_image }} 
+          sudo -E ./test.sh ${{ matrix.base_image }} 
 
     - name: Compress built image
       run: |
