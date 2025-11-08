@@ -5,8 +5,8 @@ image=$1
 # additional_mb=$2
 
 # Install required packages
-sudo apt-get update
-sudo apt-get install -y wget xz-utils
+# sudo apt-get update
+# sudo apt-get install -y wget xz-utils
 
 wget -nv -O base_image.img.xz "${image}"
 xz -T0 -d base_image.img.xz
