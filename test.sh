@@ -1,5 +1,5 @@
 #!/bin/bash
-set -uo pipefail
+# set -uo pipefail
 
 image=$1
 # additional_mb=$2
