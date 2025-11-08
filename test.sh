@@ -22,4 +22,6 @@ lsblk ${loopdev}
 
 losetup --detach "${loopdev}"
 
-printf '%s\n' "FINAL_IMAGE=base_image.img" >> "$GITHUB_ENV"
+echo "All done"
+
+echo "FINAL_IMAGE=base_image.img" >> "$GITHUB_ENV"
