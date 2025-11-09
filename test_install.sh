@@ -12,11 +12,13 @@ rootpartition=$3
 wget -nv -O base_image.img.xz "${url}"
 xz -T0 -d base_image.img.xz
 
-ls
+ls -sh base_image.img
 
 if [[ ${additional_mb} -gt 0 ]]; then
-    dd if=/dev/zero bs=1M count=${additional_mb} >> base_image.img.xz
+    dd if=/dev/zero bs=1M count=${additional_mb} >> base_image.img
 fi
+
+ls -sh base_image.img
 
 loopdev=$(losetup --find --show --partscan base_image.img)
 
