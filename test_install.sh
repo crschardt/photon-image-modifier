@@ -84,6 +84,9 @@ fi
 mv -v "${rootdir}/etc/resolv.conf" "${rootdir}/etc/resolv.conf.bak"
 cp -v /etc/resolv.conf "${rootdir}/etc/resolv.conf"
 
+# Set up the environment
+mount --bind /dev "${rootdir}/dev"
+
 ####
 # Mdify the image in chroot
 ####

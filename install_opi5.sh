@@ -56,11 +56,14 @@ apt-get install --yes --quiet libc6 libstdc++6
 # let netplan create the config during cloud-init
 rm -f /etc/netplan/00-default-nm-renderer.yaml
 
+# mount CIDATA partition
+mkdir --parents /mnt/CIDATA
+mount /dev/loop0p1 /mnt/CIDATA
 # set NetworkManager as the renderer in cloud-init
-cp -f ./OPi5_CIDATA/network-config /boot/network-config
-
+cp -f ./OPi5_CIDATA/network-config /mnt/CIDATA/network-config
 # add customized user-data file for cloud-init
-cp -f ./OPi5_CIDATA/user-data /boot/user-data
+cp -f ./OPi5_CIDATA/user-data /mnt/CIDATA/user-data
+umount /mnt/CIDATA
 
 # modify photonvision.service to enable big cores
 sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' /lib/systemd/system/photonvision.service
