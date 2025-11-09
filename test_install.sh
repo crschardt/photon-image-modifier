@@ -73,7 +73,7 @@ fi
 rootdev="${loopdev}p${rootpartition}"
 
 mkdir --parents ${rootdir}
-echo "rootdir=${rootdir}" >> "$GITHUB_OUTPUT"
+# echo "rootdir=${rootdir}" >> "$GITHUB_OUTPUT"
 mount "${rootdev}" "${rootdir}"
 if [[ -n "$bootdev" ]]; then
     echo "*** Mounting boot partition"
