@@ -1,7 +1,10 @@
-#!/bin/bash
+!/bin/bash
+# set -x
 # set -uo pipefail
 
 rootdir="./rootfs"
+rootdir="$(realpath \"${rootdir}\")"
+echo "Root directory will be at: ${rootdir}"
 
 url=$1
 additional_mb=$2
@@ -69,15 +72,14 @@ rootdev="${loopdev}p${rootpartition}"
 mkdir --parents ${rootdir}
 echo "rootdir=${rootdir}" >> "$GITHUB_OUTPUT"
 mount "${rootdev}" "${rootdir}"
-if [[ -n "$bootpartition" ]]; then
+if [[ -n "$bootdev" ]]; then
+    echo "*** Mounting boot partition"
     mkdir --parents "${rootdir}/boot"
     mount "${bootdev}" "${rootdir}/boot"
-else
-    bootdev=
 fi
 
-mv "${rootdir}/etc/resolv.conf" "${rootdir}/etc/resolv.conf.bak"
-cp /etc/resolv.conf "${rootdir}/etc/resolv.conf"
+mv -v "${rootdir}/etc/resolv.conf" "${rootdir}/etc/resolv.conf.bak"
+cp -v /etc/resolv.conf "${rootdir}/etc/resolv.conf"
 
 ####
 # Mdify the image in chroot
@@ -106,7 +108,7 @@ fi
 echo "After zero filling free space"
 df -H
 
-if [[ -d "${rootdir}/boot" ]]; then
+if [[ -d "${rootdir}/boot" && mountpoint "${rootdir}/boot"]]; then
     umount "${rootdir}/boot"
 fi
 umount "${rootdir}"
