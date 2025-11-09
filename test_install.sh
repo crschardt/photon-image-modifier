@@ -20,6 +20,8 @@ else
     bootpartition=
 fi
 
+image="base_image.img"
+
 # Install required packages
 # sudo apt-get update
 # sudo apt-get install -y wget xz-utils
@@ -27,22 +29,22 @@ fi
 ####
 # Download and prepare the image
 ####
-wget -nv -O base_image.img.xz "${url}"
-xz -T0 -d base_image.img.xz
+wget -nv -O ${image}.xz "${url}"
+xz -T0 -d ${image}.xz
 
-ls -sh base_image.img
+ls -sh ${image}
 
 ####
 # Download and mount the image
 ####
 
 if [[ ${additional_mb} -gt 0 ]]; then
-    dd if=/dev/zero bs=1M count=${additional_mb} >> base_image.img
+    dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
 fi
 
-ls -sh base_image.img
+ls -sh ${image}
 
-loopdev=$(losetup --find --show --partscan base_image.img)
+loopdev=$(losetup --find --show --partscan ${image})
 # echo "loopdev=${loopdev}" >> $GITHUB_OUTPUT
 
 part_type=$(blkid -o value -s PTTYPE "${loopdev}")
@@ -151,4 +153,4 @@ losetup --detach "${loopdev}"
 
 echo "All done"
 
-echo "image=base_image.img" >> "$GITHUB_OUTPUT"
+echo "image=${image}" >> "$GITHUB_OUTPUT"
