@@ -1,5 +1,5 @@
 #!/bin/bash
-# set -x
+set -x
 # set -uo pipefail
 
 rootdir="./rootfs"
@@ -98,7 +98,7 @@ fi
 echo "Before zero filling free space"
 df -H
 
-if [[ -d "${rootdir}/boot" ]]; then
+if mountpoint "${rootdir}/boot"; then
     (cat /dev/zero > "${rootdir}/boot/zeros" 2>/dev/null); sync; rm "${rootdir}/boot/zeros";
     # umount "${rootdir}/boot"
 fi
@@ -108,7 +108,7 @@ fi
 echo "After zero filling free space"
 df -H
 
-if [[ -d "${rootdir}/boot" && mountpoint "${rootdir}/boot"]]; then
+if mountpoint "${rootdir}/boot"; then
     umount "${rootdir}/boot"
 fi
 umount "${rootdir}"
