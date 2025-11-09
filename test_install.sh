@@ -60,11 +60,11 @@ sync
 lsblk "${loopdev}"
 partprobe -s "${loopdev}"
 if [[ -n "$bootpartition" ]]; then
-    bootdev="${loopdev}p{$bootpartition}"
+    bootdev="${loopdev}p${bootpartition}"
 else
     bootdev=
 fi
-rootdev="${loopdev}p{$rootpartition}"
+rootdev="${loopdev}p${rootpartition}"
 
 mkdir --parents ${rootdir}
 echo "rootdir=${rootdir}" >> "$GITHUB_OUTPUT"
