@@ -33,6 +33,7 @@ wget -nv -O ${image}.xz "${url}"
 xz -T0 -d ${image}.xz
 
 ls -sh ${image}
+stat -L --printf="%s" "${image}"
 
 ####
 # Download and mount the image
