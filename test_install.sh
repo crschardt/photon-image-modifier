@@ -117,6 +117,7 @@ df -H
 if mountpoint "${rootdir}/boot"; then
     umount "${rootdir}/boot"
 fi
+umount "${rootdir}/dev"
 umount "${rootdir}"
 
 echo "Resizing root filesystem to minimal size."
