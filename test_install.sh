@@ -3,6 +3,7 @@
 
 url=$1
 additional_mb=$2
+rootpartition=$3
 
 # Install required packages
 # sudo apt-get update
