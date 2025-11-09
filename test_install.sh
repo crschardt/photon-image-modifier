@@ -3,7 +3,7 @@
 # set -uo pipefail
 
 rootdir="./rootfs"
-rootdir="$(realpath \"${rootdir}\")"
+rootdir="$(realpath ${rootdir})"
 echo "Root directory will be at: ${rootdir}"
 
 url=$1
