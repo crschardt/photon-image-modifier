@@ -13,7 +13,7 @@ xz -T0 -d base_image.img.xz
 
 ls
 
-if [ ${additional_mb} -gt 0]; then
+if [[ ${additional_mb} -gt 0 ]]; then
     dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
 fi
 
@@ -22,7 +22,7 @@ loopdev=$(losetup --find --show --partscan base_image.img)
 echo "Before resize"
 lsblk ${loopdev}
 
-if [ ${additional_mb} -gt 0 ]; then
+if [[ ${additional_mb} -gt 0 ]]; then
     if ( (parted --script $loopdev print || false) | grep "Partition Table: gpt" > /dev/null); then
         sgdisk -e "${loopdev}"
     fi
