@@ -34,4 +34,4 @@ sed -i 's/#Banner none/Banner \/etc\/issue.net/g' /etc/ssh/sshd_config
 
 # Add photon version file
 mkdir -p /opt/photonvision/
-echo "${IMAAGE_VERSION}" > /opt/photonvision/image-version
+echo "${IMAGE_VERSION}" > /opt/photonvision/image-version
