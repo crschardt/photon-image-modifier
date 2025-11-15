@@ -1,7 +1,6 @@
 #!/bin/bash
 set -exv
 # set -euo pipefail
-env
 
 rootdir="./rootfs"
 rootdir="$(realpath ${rootdir})"
@@ -9,11 +8,12 @@ echo "Root directory will be at: ${rootdir}"
 
 url=$1
 install_script=$2
-additional_mb=$3
-rootpartition=$4
+image_version=$3
+additional_mb=$4
+rootpartition=$5
 
-if [[ $# -ge 5 ]]; then
-    bootpartition=$5
+if [[ $# -ge 6 ]]; then
+    bootpartition=$6
     if [[ "x$rootpartion" = "x$bootpartition" ]]; then
         echo "Boot partition cannot be equal to root partition"
         exit 1
@@ -106,7 +106,6 @@ mount --bind "$(pwd)" "${scriptdir}"
 
 cat >> "${scriptdir}/commands.sh" << EOF
 set -exv
-env
 # export DEBIAN_FRONTEND=noninteractive
 cd "${chrootscriptdir}"
 echo "In chroot, current directory: $(pwd)"
@@ -119,7 +118,7 @@ chmod +x "${install_script}"
 "${install_script}"
 echo "Running install_common.sh"
 chmod +x "./install_common.sh"
-"./install_common.sh" ${{ GITHUB.ref_name }} ${{  }}
+"./install_common.sh" ${image_version}
 EOF
 
 cat "${scriptdir}/commands.sh"

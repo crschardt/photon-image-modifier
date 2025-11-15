@@ -3,8 +3,7 @@
 # Verbose and exit on errors
 set -ex
 
-GITHUB_REF_NAME=$1
-MATRIX_NAME=$2
+IMAGE_VERSION=$1
 
 # Do additional tasks that are common across all images, 
 # but not suitable for inclusion in install.sh
@@ -35,4 +34,4 @@ sed -i 's/#Banner none/Banner \/etc\/issue.net/g' /etc/ssh/sshd_config
 
 # Add photon version file
 mkdir -p /opt/photonvision/
-echo "${GITHUB_REF_NAME};${MATRIX_NAME}" > /opt/photonvision/image-version
+echo "${IMAAGE_VERSION}" > /opt/photonvision/image-version
