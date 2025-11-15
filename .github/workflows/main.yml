@@ -79,7 +79,7 @@ jobs:
       id: install_deps
       run: |
           sudo chmod +x ./test_install.sh
-          sudo -E ./test_install.sh ${{ matrix.base_image }} ${{ matrix.additiona_mb }} 2
+          sudo -E ./test_install.sh ${{ matrix.base_image }} ${{ matrix.script }} ${{ matrix.additiona_mb }} 2
 
     - name: Compress built image
       run: |

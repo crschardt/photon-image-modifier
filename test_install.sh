@@ -1,17 +1,18 @@
 #!/bin/bash
-set -x
-# set -uo pipefail
+set -exv
+# set -euo pipefail
 
 rootdir="./rootfs"
 rootdir="$(realpath ${rootdir})"
 echo "Root directory will be at: ${rootdir}"
 
 url=$1
-additional_mb=$2
-rootpartition=$3
+install_script=$2
+additional_mb=$3
+rootpartition=$4
 
-if [[ $# -ge 4 ]]; then
-    bootpartition=$4
+if [[ $# -ge 5 ]]; then
+    bootpartition=$5
     if [[ "x$rootpartion" = "x$bootpartition" ]]; then
         echo "Boot partition cannot be equal to root partition"
         exit 1
@@ -27,7 +28,7 @@ image="base_image.img"
 # sudo apt-get install -y wget xz-utils
 
 ####
-# Download and prepare the image
+# Download the image
 ####
 wget -nv -O ${image}.xz "${url}"
 xz -T0 -d ${image}.xz
@@ -36,7 +37,7 @@ ls -sh ${image}
 stat "${image}"
 
 ####
-# Download and mount the image
+# Prepare and mount the image
 ####
 
 if [[ ${additional_mb} -gt 0 ]]; then
@@ -81,21 +82,50 @@ if [[ -n "$bootdev" ]]; then
     mount "${bootdev}" "${rootdir}/boot"
 fi
 
+
+echo "Current directory: $(pwd)"
+echo "Contents:"
+ls -la 
+# Set up the environment
+mount -t proc /proc "${rootdir}/proc"
+mount -t sysfs /sys "${rootdir}/sys"
+# sudo mount -t tmpfs /tmpfs "${rootdir}/run"
+mount --bind /dev "${rootdir}/dev"
+
 mv -v "${rootdir}/etc/resolv.conf" "${rootdir}/etc/resolv.conf.bak"
 cp -v /etc/resolv.conf "${rootdir}/etc/resolv.conf"
-
-# Set up the environment
-mount --bind /dev "${rootdir}/dev"
 
 ####
 # Mdify the image in chroot
 ####
+chrootscriptdir="/tmp/scripts"
+scriptdir="${rootdir}/${chrootscriptdir}"
+mkdir --parents "${scriptdir}"
+mount --bind "$(cwd)" "${scriptdir}"
+mainscript="${scriptdir}/commands.sh"
 
+cat >> "${mainscript}" << EOF
+set -exv
+cd "${chrootscriptdir}"
+echo "In chroot, current directory: $(cwd)"
+echo "Contents:"
+ls -la
+echo "Block devices availble"
+lsblk
+echo "Running ${install_script}"
+chmod +x "./${install_script}"
+"./${install_script}"
+echo "Running install_common.sh"
+chmod +x "./${install_common.sh}"
+"./${install_common.sh}"
+EOF
 
+sudo -E chroot "${rootdir}" /bin/bash -c "${mainscript}"
 
 ####
 # Clean up and shrink image
 ####
+rm -r "${rootdir}/tmp/*"
 
 if [[ -e "${rootdir}/etc/resolv.conf" ]]; then
     mv "${rootdir}/etc/resolv.conf.bak" "${rootdir}/etc/resolv.conf"
@@ -117,6 +147,8 @@ df -H
 if mountpoint "${rootdir}/boot"; then
     umount "${rootdir}/boot"
 fi
+umount "${rootdir}/proc"
+umount "${rootdir}/sys"
 umount "${rootdir}/dev"
 umount "${rootdir}"
 
