@@ -98,7 +98,7 @@ cp -v /etc/resolv.conf "${rootdir}/etc/resolv.conf"
 ####
 # Modify the image in chroot
 ####
-chrootscriptdir=/tmp/scripts
+chrootscriptdir=/tmp/build
 scriptdir=${rootdir}/${chrootscriptdir}
 mkdir --parents "${scriptdir}"
 mount --bind "$(pwd)" "${scriptdir}"
