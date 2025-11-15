@@ -96,15 +96,14 @@ mv -v "${rootdir}/etc/resolv.conf" "${rootdir}/etc/resolv.conf.bak"
 cp -v /etc/resolv.conf "${rootdir}/etc/resolv.conf"
 
 ####
-# Mdify the image in chroot
+# Modify the image in chroot
 ####
-chrootscriptdir="/tmp/scripts"
-scriptdir="${rootdir}/${chrootscriptdir}"
+chrootscriptdir=/tmp/scripts
+scriptdir=${rootdir}/${chrootscriptdir}
 mkdir --parents "${scriptdir}"
 mount --bind "$(pwd)" "${scriptdir}"
-mainscript="${scriptdir}/commands.sh"
 
-cat >> "${mainscript}" << EOF
+cat >> "${scriptdir}/commands.sh" << EOF
 set -exv
 cd "${chrootscriptdir}"
 echo "In chroot, current directory: $(pwd)"
@@ -120,7 +119,9 @@ chmod +x "./install_common.sh"
 "./install_common.sh"
 EOF
 
-sudo -E chroot "${rootdir}" /bin/bash -c "${mainscript}"
+cat "${scriptdir}/commands.sh"
+
+sudo -E chroot "${rootdir}" /bin/bash -c "${chrootscriptdir}/commands.sh"
 
 ####
 # Clean up and shrink image
