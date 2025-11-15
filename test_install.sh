@@ -8,7 +8,7 @@ echo "Root directory will be at: ${rootdir}"
 
 url=$1
 install_script=$2
-image_version=$3
+image_version="$3"
 additional_mb=$4
 rootpartition=$5
 
@@ -108,17 +108,13 @@ cat >> "${scriptdir}/commands.sh" << EOF
 set -exv
 # export DEBIAN_FRONTEND=noninteractive
 cd "${chrootscriptdir}"
-echo "In chroot, current directory: $(pwd)"
-echo "Contents:"
-ls -la
 echo "Block devices availble"
-lsblk
 echo "Running ${install_script}"
 chmod +x "${install_script}"
 "${install_script}"
 echo "Running install_common.sh"
 chmod +x "./install_common.sh"
-"./install_common.sh" ${image_version}
+"./install_common.sh" "${image_version}"
 EOF
 
 cat "${scriptdir}/commands.sh"
