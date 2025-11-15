@@ -139,7 +139,7 @@ if mountpoint "${rootdir}/boot"; then
     (cat /dev/zero > "${rootdir}/boot/zeros" 2>/dev/null); sync; rm "${rootdir}/boot/zeros";
     # umount "${rootdir}/boot"
 fi
-(cat /dev/zero > "${rootdir}/zeros" 2>/dev/null); sync; rm "${rootdir}/zeros";
+# (cat /dev/zero > "${rootdir}/zeros" 2>/dev/null); sync; rm "${rootdir}/zeros";
 # umount "${rootdir}"
 
 echo "After zero filling free space"
