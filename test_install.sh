@@ -127,7 +127,6 @@ sudo -E chroot "${rootdir}" /bin/bash -c "${chrootscriptdir}/commands.sh"
 ####
 # Clean up and shrink image
 ####
-rm -r "${rootdir}/tmp/*"
 
 if [[ -e "${rootdir}/etc/resolv.conf" ]]; then
     mv "${rootdir}/etc/resolv.conf.bak" "${rootdir}/etc/resolv.conf"
