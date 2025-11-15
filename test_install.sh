@@ -112,14 +112,15 @@ ls -la
 echo "Block devices availble"
 lsblk
 echo "Running ${install_script}"
-chmod +x "./${install_script}"
-"./${install_script}"
+chmod +x "${install_script}"
+"${install_script}"
 echo "Running install_common.sh"
 chmod +x "./install_common.sh"
 "./install_common.sh"
 EOF
 
 cat "${scriptdir}/commands.sh"
+chmod +x "${scriptdir}/commands.sh"
 
 sudo -E chroot "${rootdir}" /bin/bash -c "${chrootscriptdir}/commands.sh"
 
