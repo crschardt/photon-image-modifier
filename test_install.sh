@@ -1,6 +1,7 @@
 #!/bin/bash
 set -exv
 # set -euo pipefail
+env
 
 rootdir="./rootfs"
 rootdir="$(realpath ${rootdir})"
@@ -105,7 +106,8 @@ mount --bind "$(pwd)" "${scriptdir}"
 
 cat >> "${scriptdir}/commands.sh" << EOF
 set -exv
-export DEBIAN_FRONTEND=noninteractive
+env
+# export DEBIAN_FRONTEND=noninteractive
 cd "${chrootscriptdir}"
 echo "In chroot, current directory: $(pwd)"
 echo "Contents:"
@@ -117,7 +119,7 @@ chmod +x "${install_script}"
 "${install_script}"
 echo "Running install_common.sh"
 chmod +x "./install_common.sh"
-"./install_common.sh"
+"./install_common.sh" ${{ GITHUB.ref_name }} ${{  }}
 EOF
 
 cat "${scriptdir}/commands.sh"
