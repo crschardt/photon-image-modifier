@@ -101,13 +101,13 @@ cp -v /etc/resolv.conf "${rootdir}/etc/resolv.conf"
 chrootscriptdir="/tmp/scripts"
 scriptdir="${rootdir}/${chrootscriptdir}"
 mkdir --parents "${scriptdir}"
-mount --bind "$(cwd)" "${scriptdir}"
+mount --bind "$(pwd)" "${scriptdir}"
 mainscript="${scriptdir}/commands.sh"
 
 cat >> "${mainscript}" << EOF
 set -exv
 cd "${chrootscriptdir}"
-echo "In chroot, current directory: $(cwd)"
+echo "In chroot, current directory: $(pwd)"
 echo "Contents:"
 ls -la
 echo "Block devices availble"
