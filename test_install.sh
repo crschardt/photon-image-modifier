@@ -100,7 +100,7 @@ cp -v /etc/resolv.conf "${rootdir}/etc/resolv.conf"
 # Modify the image in chroot
 ####
 chrootscriptdir=/tmp/build
-scriptdir=${rootdir}/${chrootscriptdir}
+scriptdir=${rootdir}${chrootscriptdir}
 mkdir --parents "${scriptdir}"
 mount --bind "$(pwd)" "${scriptdir}"
 
@@ -108,16 +108,15 @@ cat >> "${scriptdir}/commands.sh" << EOF
 set -exv
 # export DEBIAN_FRONTEND=noninteractive
 cd "${chrootscriptdir}"
-echo "Block devices availble"
 echo "Running ${install_script}"
 chmod +x "${install_script}"
-"${install_script}"
+"./${install_script}"
 echo "Running install_common.sh"
 chmod +x "./install_common.sh"
 "./install_common.sh" "${image_version}"
 EOF
 
-cat "${scriptdir}/commands.sh"
+cat -n "${scriptdir}/commands.sh"
 chmod +x "${scriptdir}/commands.sh"
 
 sudo -E chroot "${rootdir}" /bin/bash -c "${chrootscriptdir}/commands.sh"
