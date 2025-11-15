@@ -90,7 +90,7 @@ ls -la
 mount -t proc /proc "${rootdir}/proc"
 mount -t sysfs /sys "${rootdir}/sys"
 # sudo mount -t tmpfs /tmpfs "${rootdir}/run"
-mount --bind /dev "${rootdir}/dev"
+mount --rbind /dev "${rootdir}/dev"
 
 mv -v "${rootdir}/etc/resolv.conf" "${rootdir}/etc/resolv.conf.bak"
 cp -v /etc/resolv.conf "${rootdir}/etc/resolv.conf"
@@ -105,6 +105,7 @@ mount --bind "$(pwd)" "${scriptdir}"
 
 cat >> "${scriptdir}/commands.sh" << EOF
 set -exv
+export DEBIAN_FRONTEND=noninteractive
 cd "${chrootscriptdir}"
 echo "In chroot, current directory: $(pwd)"
 echo "Contents:"
@@ -145,13 +146,13 @@ fi
 echo "After zero filling free space"
 df -H
 
-if mountpoint "${rootdir}/boot"; then
-    umount "${rootdir}/boot"
-fi
-umount "${rootdir}/proc"
-umount "${rootdir}/sys"
-umount "${rootdir}/dev"
-umount "${rootdir}"
+# if mountpoint "${rootdir}/boot"; then
+#     umount "${rootdir}/boot"
+# fi
+# umount "${rootdir}/proc"
+# umount "${rootdir}/sys"
+# umount "${rootdir}/dev"
+umount --recursive "${rootdir}"
 
 echo "Resizing root filesystem to minimal size."
 e2fsck -v -f -p -E discard "${rootdev}"
