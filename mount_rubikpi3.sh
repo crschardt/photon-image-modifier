@@ -168,7 +168,9 @@ sudo chroot rootfs /bin/bash -c "
 "
 
 echo "Zero filling empty space"
-sudo (cat /dev/zero > rootfs/zeros 2>/dev/null || true); sync; sudo rm rootfs/zeros;
+sudo cat /dev/zero > rootfs/zeros 2>/dev/null || true
+sync
+sudo rm rootfs/zeros
 
 # Cleanup mounts
 sudo umount rootfs/dev || true
