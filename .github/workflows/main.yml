@@ -110,7 +110,7 @@ jobs:
       id: install_deps
       run: |
         sudo chmod +x ./mount_image.sh
-        sudo -E ./mount_image.sh ${{ matrix.base_image }} ${{ matrix.script }} 500 2
+        sudo -E ./mount_image.sh ${{ matrix.base_image }} ${{ matrix.script }} 1000 2
 
     - name: Compress built image
       run: |
