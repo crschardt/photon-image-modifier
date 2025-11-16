@@ -91,7 +91,7 @@ mount --bind "$(pwd)" "${scriptdir}"
 
 cat >> "${scriptdir}/commands.sh" << EOF
 set -ex
-# export DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND=noninteractive
 cd "${chrootscriptdir}"
 echo "Running ${install_script}"
 chmod +x "${install_script}"

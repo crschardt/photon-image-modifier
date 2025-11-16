@@ -168,9 +168,7 @@ sudo chroot rootfs /bin/bash -c "
   echo '=== Running ${script} ==='
   ./${script}
   echo '=== Zero filling empty space ==='
-  sudo cat /dev/zero > /zeros 2>/dev/null || true
-  sync
-  sudo rm /zeros
+  (cat /dev/zero > /zeros 2>/dev/null || true); sync; rm /zeros;
 "
 
 # Cleanup mounts
