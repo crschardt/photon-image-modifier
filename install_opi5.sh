@@ -55,7 +55,7 @@ apt-get install --yes --quiet libc6 libstdc++6
 rm -f /etc/netplan/00-default-nm-renderer.yaml
 
 mkdir --parents /mnt/CIDATA
-mount /dev/${loopdev}p1 /mnt/CIDATA
+mount "${loopdev}p1" /mnt/CIDATA
 # set NetworkManager as the renderer in cloud-init
 cp -f ./OPi5_CIDATA/network-config /mnt/CIDATA/network-config
 # add customized user-data file for cloud-init
