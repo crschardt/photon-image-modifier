@@ -135,15 +135,6 @@ sudo mount --bind /dev rootfs/dev
 
 findmnt
 
-sudo touch ./rootfs/home/zeros
-sudo chmod +w ./rootfs/home/zeros
-sudo ls -la ./rootfs/home
-sudo cat /dev/zero > ./rootfs/home/zeros 2>/dev/null || true
-sync
-sudo rm ./rootfs/home/zeros
-
-exit 1
-
 # Setup DNS resolution in chroot
 echo "=== Setting up DNS in chroot ==="
 sudo rm -f rootfs/etc/resolv.conf
@@ -176,12 +167,11 @@ sudo chroot rootfs /bin/bash -c "
   chmod +x ${script}
   echo '=== Running ${script} ==='
   ./${script}
+  echo '=== Zero filling empty space ==='
+  sudo cat /dev/zero > /zeros 2>/dev/null || true
+  sync
+  sudo rm /zeros
 "
-
-echo "Zero filling empty space"
-sudo cat /dev/zero > rootfs/zeros 2>/dev/null || true
-sync
-sudo rm rootfs/zeros
 
 # Cleanup mounts
 sudo umount rootfs/dev || true
