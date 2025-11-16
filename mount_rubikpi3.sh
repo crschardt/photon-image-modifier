@@ -163,8 +163,8 @@ sudo chroot rootfs /bin/bash -c "
 
   echo '=== Making script executable ==='
   chmod +x ${script}
-  echo '=== Running ${script} with arguments: ${@:3} ==='
-  ./${script} ${@:3}
+  echo '=== Running ${script} ==='
+  ./${script}
 "
 
 # Cleanup mounts

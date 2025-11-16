@@ -1,5 +1,4 @@
-#!/bin/bash -v
-
+#!/bin/bash
 # Verbose and exit on errors
 set -ex
 
@@ -29,3 +28,7 @@ echo "photon:vision" | chpasswd
 cp -f ./files/issue.txt /etc/issue
 cp -f /etc/issue /etc/issue.net
 sed -i 's/#Banner none/Banner \/etc\/issue.net/g' /etc/ssh/sshd_config
+
+# Add photon version file
+mkdir -p /opt/photonvision/
+echo "${GITHUB_REF_NAME};${image_name}" > /opt/photonvision/image-version
