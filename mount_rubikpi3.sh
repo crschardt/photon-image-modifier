@@ -133,11 +133,11 @@ sudo mount -t sysfs sysfs rootfs/sys
 sudo mount -t tmpfs tmpfs rootfs/run
 sudo mount --bind /dev rootfs/dev
 
+findmnt
 
+sudo touch ./rootfs/zeros
 sudo ls -la .
 sudo ls -la ./rootfs
-sudo ls -la ./rootfs/dev
-sudo touch ./rootfs/zeros
 sudo cat /dev/zero > ./rootfs/zeros 2>/dev/null || true
 sync
 sudo rm rootfs/zeros
