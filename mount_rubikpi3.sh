@@ -133,6 +133,15 @@ sudo mount -t sysfs sysfs rootfs/sys
 sudo mount -t tmpfs tmpfs rootfs/run
 sudo mount --bind /dev rootfs/dev
 
+
+sudo ls -la .
+suod ls -la ./rootfs
+sudo ls -la ./rootfs/dev
+sudo touch ./rootfs/zeros
+sudo cat /dev/zero > ./rootfs/zeros 2>/dev/null || true
+sync
+sudo rm rootfs/zeros
+
 # Setup DNS resolution in chroot
 echo "=== Setting up DNS in chroot ==="
 sudo rm -f rootfs/etc/resolv.conf
