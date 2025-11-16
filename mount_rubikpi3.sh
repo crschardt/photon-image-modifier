@@ -135,7 +135,7 @@ sudo mount --bind /dev rootfs/dev
 
 
 sudo ls -la .
-suod ls -la ./rootfs
+sudo ls -la ./rootfs
 sudo ls -la ./rootfs/dev
 sudo touch ./rootfs/zeros
 sudo cat /dev/zero > ./rootfs/zeros 2>/dev/null || true
