@@ -36,7 +36,7 @@ if [[ ${additional_mb} -gt 0 ]]; then
     dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
 fi
 
-loopdev=$(losetup --find --show --partscan ${image})
+export loopdev=$(losetup --find --show --partscan ${image})
 # echo "loopdev=${loopdev}" >> $GITHUB_OUTPUT
 
 part_type=$(blkid -o value -s PTTYPE "${loopdev}")
