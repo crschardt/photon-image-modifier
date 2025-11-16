@@ -135,12 +135,14 @@ sudo mount --bind /dev rootfs/dev
 
 findmnt
 
-sudo touch ./rootfs/zeros
-sudo chmod +w ./rootfs/zeros
-sudo ls -la ./rootfs
-sudo cat /dev/zero > ./rootfs/zeros 2>/dev/null || true
+sudo touch ./rootfs/home/zeros
+sudo chmod +w ./rootfs/home/zeros
+sudo ls -la ./rootfs/home
+sudo cat /dev/zero > ./rootfs/home/zeros 2>/dev/null || true
 sync
-sudo rm ./rootfs/zeros
+sudo rm ./rootfs/home/zeros
+
+exit 1
 
 # Setup DNS resolution in chroot
 echo "=== Setting up DNS in chroot ==="
