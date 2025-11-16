@@ -1,10 +1,9 @@
 #!/bin/bash
-set -ex
-# set -euo pipefail
+set -exuo pipefail
 
 rootdir="./rootfs"
 rootdir="$(realpath ${rootdir})"
-echo "Root directory will be at: ${rootdir}"
+echo "Root directory will be: ${rootdir}"
 
 url=$1
 install_script=$2
@@ -23,18 +22,11 @@ fi
 
 image="base_image.img"
 
-# Install required packages
-# sudo apt-get update
-# sudo apt-get install -y wget xz-utils
-
 ####
 # Download the image
 ####
 wget -nv -O ${image}.xz "${url}"
 xz -T0 -d ${image}.xz
-
-ls -sh ${image}
-stat "${image}"
 
 ####
 # Prepare and mount the image
@@ -43,8 +35,6 @@ stat "${image}"
 if [[ ${additional_mb} -gt 0 ]]; then
     dd if=/dev/zero bs=1M count=${additional_mb} >> ${image}
 fi
-
-ls -sh ${image}
 
 loopdev=$(losetup --find --show --partscan ${image})
 # echo "loopdev=${loopdev}" >> $GITHUB_OUTPUT
@@ -64,8 +54,9 @@ fi
 
 sync
 
+echo "Partitions in the mounted image:"
 lsblk "${loopdev}"
-partprobe -s "${loopdev}"
+
 if [[ -n "$bootpartition" ]]; then
     bootdev="${loopdev}p${bootpartition}"
 else
@@ -77,21 +68,16 @@ mkdir --parents ${rootdir}
 # echo "rootdir=${rootdir}" >> "$GITHUB_OUTPUT"
 mount "${rootdev}" "${rootdir}"
 if [[ -n "$bootdev" ]]; then
-    echo "*** Mounting boot partition"
     mkdir --parents "${rootdir}/boot"
     mount "${bootdev}" "${rootdir}/boot"
 fi
 
-
-echo "Current directory: $(pwd)"
-echo "Contents:"
-ls -la 
 # Set up the environment
 mount -t proc /proc "${rootdir}/proc"
 mount -t sysfs /sys "${rootdir}/sys"
-# sudo mount -t tmpfs /tmpfs "${rootdir}/run"
 mount --rbind /dev "${rootdir}/dev"
 
+# Temporarily replace resolv.conf for networking
 mv -v "${rootdir}/etc/resolv.conf" "${rootdir}/etc/resolv.conf.bak"
 cp -v /etc/resolv.conf "${rootdir}/etc/resolv.conf"
 
@@ -124,30 +110,17 @@ sudo -E chroot "${rootdir}" /bin/bash -c "${chrootscriptdir}/commands.sh"
 # Clean up and shrink image
 ####
 
-if [[ -e "${rootdir}/etc/resolv.conf" ]]; then
+if [[ -e "${rootdir}/etc/resolv.conf.bak" ]]; then
     mv "${rootdir}/etc/resolv.conf.bak" "${rootdir}/etc/resolv.conf"
 fi
 
-echo "Before zero filling free space"
-df -H
-
+echo "Zero filling empty space"
 if mountpoint "${rootdir}/boot"; then
     (cat /dev/zero > "${rootdir}/boot/zeros" 2>/dev/null || true); sync; rm "${rootdir}/boot/zeros";
-    # umount "${rootdir}/boot"
 fi
 
 (cat /dev/zero > "${rootdir}/zeros" 2>/dev/null || true); sync; rm "${rootdir}/zeros";
-# umount "${rootdir}"
 
-echo "After zero filling free space"
-df -H
-
-# if mountpoint "${rootdir}/boot"; then
-#     umount "${rootdir}/boot"
-# fi
-# umount "${rootdir}/proc"
-# umount "${rootdir}/sys"
-# umount "${rootdir}/dev"
 umount --recursive "${rootdir}"
 
 echo "Resizing root filesystem to minimal size."
@@ -185,7 +158,5 @@ if [[ "${free_space}" =~ "free" ]]; then
 fi
 
 losetup --detach "${loopdev}"
-
-echo "All done"
 
 echo "image=${image}" >> "$GITHUB_OUTPUT"
