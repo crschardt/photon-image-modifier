@@ -41,6 +41,26 @@ EOF_UBUNTU_SOURCES
 
 apt-get -q update
 
+# Remove extra packages too
+echo "Space available before purging things"
+df -h
+
+# get rid of snaps
+echo "Purging snaps"
+rm -rf /var/lib/snapd/seed/snaps/*
+rm -f /var/lib/snapd/seed/seed.yaml
+apt-get purge --yes lxd-installer lxd-agent-loader snapd gdb gcc g++ linux-headers* libgcc*-dev perl-modules* git vim-runtime
+apt-get autoremove -y
+
+rm -rf /var/lib/apt/lists/*
+apt-get clean
+
+rm -rf /usr/share/doc
+rm -rf /usr/share/locale/
+
+echo "Space available after purging things"
+df -h
+
 # This needs to run before install.sh to fix some weird dependency issues
 apt-get -y --allow-downgrades install libsqlite3-0=3.45.1-1ubuntu2
 
@@ -56,22 +76,6 @@ apt-get -y install libqnn1 libsnpe1 qcom-adreno1 device-tree-compiler
 
 # Enable ssh
 systemctl enable ssh
-
-# Remove extra packages too
-echo "Purging extra things"
-
-# get rid of snaps
-echo "Purging snaps"
-rm -rf /var/lib/snapd/seed/snaps/*
-rm -f /var/lib/snapd/seed/seed.yaml
-apt-get purge --yes lxd-installer lxd-agent-loader snapd gdb gcc g++ linux-headers* libgcc*-dev perl-modules* git vim-runtime
-apt-get autoremove -y
-
-rm -rf /var/lib/apt/lists/*
-apt-get clean
-
-rm -rf /usr/share/doc
-rm -rf /usr/share/locale/
 
 # modify photonvision.service to run on A78 cores
 sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' /lib/systemd/system/photonvision.service
