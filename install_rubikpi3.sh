@@ -138,3 +138,22 @@ EOF_FAN_SERVICE
 
 # 4. Enable the new service
 systemctl enable rubik-fan-max.service
+
+echo "Space available before purging things"
+df -h
+
+# get rid of snaps
+# echo "Purging snaps"
+# rm -rf /var/lib/snapd/seed/snaps/*
+# rm -f /var/lib/snapd/seed/seed.yaml
+# apt-get purge --yes lxd-installer lxd-agent-loader snapd gdb gcc g++ linux-headers* libgcc*-dev perl-modules* git vim-runtime
+# apt-get autoremove -y
+
+rm -rf /var/lib/apt/lists/*
+apt-get clean
+
+rm -rf /usr/share/doc
+rm -rf /usr/share/locale/
+
+echo "Space available after purging things"
+df -h
