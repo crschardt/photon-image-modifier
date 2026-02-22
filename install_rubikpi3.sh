@@ -3,6 +3,9 @@
 # Exit on errors, print commands, ignore unset variables
 set -ex +u
 
+echo "Packages that are on the base image"
+dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -nr
+
 cd /tmp/build
 echo '=== Current directory: \$(pwd) ==='
 echo '=== Files in current directory: ==='
@@ -140,7 +143,7 @@ EOF_FAN_SERVICE
 systemctl enable rubik-fan-max.service
 
 echo "Space available before purging things"
-df -h
+df -h .
 
 # get rid of snaps
 # echo "Purging snaps"
@@ -150,10 +153,13 @@ df -h
 # apt-get autoremove -y
 
 rm -rf /var/lib/apt/lists/*
+df -h .
+
 apt-get clean
+df -h .
 
 rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
 
 echo "Space available after purging things"
-df -h
+df -h .
