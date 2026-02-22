@@ -30,14 +30,17 @@ APT::Color "0";
 Dpkg::Use-Pty "0";
 EOF_DPKG
 
+
 # Make sure all the sources are available for apt
-# cat > /etc/apt/sources.list.d/ubuntu.sources << EOF_UBUNTU_SOURCES
-# Types: deb
-# URIs: http://ports.ubuntu.com/ubuntu-ports
-# Suites: noble noble-updates noble-backports
-# Components: main universe restricted multiverse
-# Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-# EOF_UBUNTU_SOURCES
+cat > /etc/apt/sources.list.d/ubuntu.sources << EOF_UBUNTU_SOURCES
+Types: deb
+URIs: http://ports.ubuntu.com/ubuntu-ports
+Suites: noble noble-updates noble-backports
+Components: main universe restricted multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+EOF_UBUNTU_SOURCES
+
+diff /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources
 
 apt-get -q update
 
