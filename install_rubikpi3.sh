@@ -41,7 +41,13 @@ EOF_DPKG
 
 apt-get -q update
 
-# Remove extra packages too
+# This needs to run before install.sh to fix some weird dependency issues
+apt-get -y --allow-downgrades install libsqlite3-0=3.45.1-1ubuntu2
+
+# Add the GPG key for the RUBIK Pi PPA
+wget -qO - https://thundercomm.s3.dualstack.ap-northeast-1.amazonaws.com/uploads/web/rubik-pi-3/tools/key.asc | tee /etc/apt/trusted.gpg.d/rubikpi3.asc
+
+# Remove extra packages to make space
 echo "Space available before purging things"
 df -h
 
@@ -60,12 +66,6 @@ rm -rf /usr/share/locale/
 
 echo "Space available after purging things"
 df -h
-
-# This needs to run before install.sh to fix some weird dependency issues
-apt-get -y --allow-downgrades install libsqlite3-0=3.45.1-1ubuntu2
-
-# Add the GPG key for the RUBIK Pi PPA
-wget -qO - https://thundercomm.s3.dualstack.ap-northeast-1.amazonaws.com/uploads/web/rubik-pi-3/tools/key.asc | tee /etc/apt/trusted.gpg.d/rubikpi3.asc
 
 # Run normal photon installer
 chmod +x ./install.sh
