@@ -143,7 +143,7 @@ EOF_FAN_SERVICE
 systemctl enable rubik-fan-max.service
 
 echo "Space available before purging things"
-df -h .
+df -h /dev/loop0
 
 # get rid of snaps
 # echo "Purging snaps"
@@ -153,13 +153,13 @@ df -h .
 # apt-get autoremove -y
 
 rm -rf /var/lib/apt/lists/*
-df -h .
+df -h /dev/loop0
 
 apt-get clean
-df -h .
+df -h /dev/loop0
 
 rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
 
 echo "Space available after purging things"
-df -h .
+df -h /dev/loop0
