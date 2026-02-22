@@ -40,7 +40,7 @@ Components: main universe restricted multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 EOF_UBUNTU_SOURCES
 
-diff /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources
+# diff /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources
 
 apt-get -q update
 
