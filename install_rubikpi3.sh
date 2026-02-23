@@ -3,8 +3,8 @@
 # Exit on errors, print commands, ignore unset variables
 set -ex +u
 
-echo "Packages that are on the base image"
-dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -nr
+# echo "Packages that are on the base image"
+# dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -nr
 
 cd /tmp/build
 echo '=== Current directory: \$(pwd) ==='
@@ -69,6 +69,13 @@ apt-get clean
 
 rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
+
+# remove firmware that (probably) isn't needed
+rm -rf /usr/lib/firmware/mrvl
+rm -rf /usr/lib/firmware/mellanox
+rm -rf /usr/lib/firmware/nvidia
+rm -rf /usr/lib/firmware/intel
+rm -rf /usr/lib/firmware/mediatek
 
 echo "Space available after purging things"
 df -h
