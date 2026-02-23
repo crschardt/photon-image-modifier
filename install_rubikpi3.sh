@@ -7,7 +7,7 @@ set -ex +u
 # dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -nr
 
 cd /tmp/build
-echo '=== Current directory: \$(pwd) ==='
+echo '=== Current directory: $(pwd) ==='
 echo '=== Files in current directory: ==='
 ls -la
 
@@ -61,23 +61,14 @@ df -h
 echo "Purging snaps"
 rm -rf /var/lib/snapd/seed/snaps/*
 rm -f /var/lib/snapd/seed/seed.yaml
-apt-get purge --yes lxd-installer lxd-agent-loader snapd gdb gcc g++ linux-headers* libgcc*-dev perl-modules* git vim-runtime
-apt-get autoremove -y
+apt-get purge --yes lxd-installer lxd-agent-loader snapd gdb gcc g++ linux-headers* libgcc*-dev perl-modules* git vim-runtime bluez python3-twisted sosreport
+apt-get autoremove --yes
 
 rm -rf /var/lib/apt/lists/*
 apt-get clean
 
-df -h
-
 rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
-
-# remove firmware that (probably) isn't needed
-rm -rf /usr/lib/firmware/mrvl
-rm -rf /usr/lib/firmware/mellanox
-rm -rf /usr/lib/firmware/nvidia
-rm -rf /usr/lib/firmware/intel
-rm -rf /usr/lib/firmware/mediatek
 
 echo "Space available after purging things"
 df -h
