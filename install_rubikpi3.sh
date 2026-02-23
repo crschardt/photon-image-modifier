@@ -145,12 +145,8 @@ systemctl enable rubik-fan-max.service
 echo "Space available before purging things"
 df -h /dev/loop0
 
-# get rid of snaps
-# echo "Purging snaps"
-# rm -rf /var/lib/snapd/seed/snaps/*
-# rm -f /var/lib/snapd/seed/seed.yaml
-# apt-get purge --yes lxd-installer lxd-agent-loader snapd gdb gcc g++ linux-headers* libgcc*-dev perl-modules* git vim-runtime
-# apt-get autoremove -y
+echo 'GRUB_CMDLINE_LINUX="${GRUB_CMDLINE_LINUX} dyndbg=\"file drivers/base/firmware_loader/main.c +fmp\" "' > /etc/default/grub.d/50-log-loaded-firmware.cfg
+update-grub
 
 rm -rf /var/lib/apt/lists/*
 df -h /dev/loop0
@@ -160,6 +156,12 @@ df -h /dev/loop0
 
 rm -rf /usr/share/doc
 rm -rf /usr/share/locale/
+
+# remove firmware that (probably) isn't needed
+rm -rf /usr/lib/firmware/mrvl
+rm -rf /usr/lib/firmware/mellanox
+rm -rf /usr/lib/firmware/nvidia
+rm -rf /usr/lib/firmware/intel
 
 echo "Space available after purging things"
 df -h /dev/loop0
