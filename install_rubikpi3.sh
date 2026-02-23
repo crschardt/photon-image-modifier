@@ -69,15 +69,15 @@ apt-get clean
 
 df -h
 
-rm -rvf /usr/share/doc
-rm -rvf /usr/share/locale/
+rm -rf /usr/share/doc
+rm -rf /usr/share/locale/
 
 # remove firmware that (probably) isn't needed
-rm -rvf /usr/lib/firmware/mrvl
-rm -rvf /usr/lib/firmware/mellanox
-rm -rvf /usr/lib/firmware/nvidia
-rm -rvf /usr/lib/firmware/intel
-rm -rvf /usr/lib/firmware/mediatek
+rm -rf /usr/lib/firmware/mrvl
+rm -rf /usr/lib/firmware/mellanox
+rm -rf /usr/lib/firmware/nvidia
+rm -rf /usr/lib/firmware/intel
+rm -rf /usr/lib/firmware/mediatek
 
 echo "Space available after purging things"
 df -h
