@@ -212,8 +212,15 @@ else
   RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/$VERSION"
 fi
 
-DOWNLOAD_URL=$(curl -sk "$RELEASE_URL" |
-                  grep "browser_download_url.*$ARCH_NAME.jar" |
+# use GITHUB TOKEN when available to authenticate
+if [[ -n $GH_TOKEN ]]; then
+  RELEASES=$(curl -s -H "Authorization: Bearer $GH_TOKEN" "$RELEASE_URL")
+else
+  RELEASES=$(curl -sk "$RELEASE_URL")
+fi
+
+DOWNLOAD_URL=$(echo "$RELEASES" |
+                  grep "browser_download_url.*${ARCH_NAME}\.jar" |
                   cut -d : -f 2,3 |
                   tr -d '"'
               )
