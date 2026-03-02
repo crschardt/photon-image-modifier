@@ -212,8 +212,12 @@ else
   RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/$VERSION"
 fi
 
-DOWNLOAD_URL=$(curl -sk "$RELEASE_URL" |
-                  grep "browser_download_url.*$ARCH_NAME.jar" |
+RELEASES=$(curl --silent --show-error --insecure "$RELEASE_URL")
+
+grep "browser_download_url" <<< "$RELEASES"
+
+DOWNLOAD_URL=$(echo "$RELEASES" |
+                  grep "browser_download_url.*$ARCH_NAME\.jar" |
                   cut -d : -f 2,3 |
                   tr -d '"'
               )
