@@ -4,7 +4,7 @@
 set -ex +u
 
 cd /tmp/build
-echo '=== Current directory: \$(pwd) ==='
+echo '=== Current directory: $(pwd) ==='
 echo '=== Files in current directory: ==='
 ls -la
 
@@ -30,6 +30,7 @@ APT::Color "0";
 Dpkg::Use-Pty "0";
 EOF_DPKG
 
+
 # Make sure all the sources are available for apt
 cat > /etc/apt/sources.list.d/ubuntu.sources << EOF_UBUNTU_SOURCES
 Types: deb
@@ -39,6 +40,8 @@ Components: main universe restricted multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 EOF_UBUNTU_SOURCES
 
+# diff /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources
+
 apt-get -q update
 
 # This needs to run before install.sh to fix some weird dependency issues
@@ -46,6 +49,26 @@ apt-get -y --allow-downgrades install libsqlite3-0=3.45.1-1ubuntu2
 
 # Add the GPG key for the RUBIK Pi PPA
 wget -qO - https://thundercomm.s3.dualstack.ap-northeast-1.amazonaws.com/uploads/web/rubik-pi-3/tools/key.asc | tee /etc/apt/trusted.gpg.d/rubikpi3.asc
+
+# Remove extra packages to make space
+echo "Space available before purging things"
+df -h
+
+# get rid of snaps
+echo "Purging snaps"
+rm -rf /var/lib/snapd/seed/snaps/*
+rm -f /var/lib/snapd/seed/seed.yaml
+apt-get purge --yes lxd-installer lxd-agent-loader snapd gdb gcc g++ linux-headers* libgcc*-dev perl-modules* git vim-runtime python3-twisted sosreport bluez
+apt-get autoremove --yes
+
+rm -rf /var/lib/apt/lists/*
+apt-get clean
+
+rm -rf /usr/share/doc
+rm -rf /usr/share/locale/
+
+echo "Space available after purging things"
+df -h
 
 # Run normal photon installer
 chmod +x ./install.sh
@@ -57,22 +80,6 @@ apt-get -y install libqnn1 libsnpe1 qcom-adreno1 device-tree-compiler
 # Enable ssh
 systemctl enable ssh
 
-# Remove extra packages too
-echo "Purging extra things"
-
-# get rid of snaps
-echo "Purging snaps"
-rm -rf /var/lib/snapd/seed/snaps/*
-rm -f /var/lib/snapd/seed/seed.yaml
-apt-get purge --yes lxd-installer lxd-agent-loader snapd gdb gcc g++ linux-headers* libgcc*-dev perl-modules* git vim-runtime
-apt-get autoremove -y
-
-rm -rf /var/lib/apt/lists/*
-apt-get clean
-
-rm -rf /usr/share/doc
-rm -rf /usr/share/locale/
-
 # modify photonvision.service to run on A78 cores
 sed -i 's/# AllowedCPUs=4-7/AllowedCPUs=4-7/g' /lib/systemd/system/photonvision.service
 cp -f /lib/systemd/system/photonvision.service /etc/systemd/system/photonvision.service
@@ -81,13 +88,6 @@ cat /etc/systemd/system/photonvision.service
 
 # networkd isn't being used, this causes an unnecessary delay
 systemctl disable systemd-networkd-wait-online.service
-
-# PhotonVision server is managing the network, so it doesn't need to wait for online
-# systemctl disable NetworkManager-wait-online.service
-
-# Disable Bluetooth
-sed -i 's/^AutoEnable=.*/AutoEnable=false/g' /etc/bluetooth/main.conf
-systemctl disable bluetooth.service
 
 # set the hostname during cloud-init and disable cloud-init after first boot
 cat >> /var/lib/cloud/seed/nocloud/user-data << EOFUSERDATA
@@ -131,3 +131,24 @@ EOF_FAN_SERVICE
 
 # 4. Enable the new service
 systemctl enable rubik-fan-max.service
+
+echo "Space available before purging things"
+df -h /dev/loop0
+
+rm -rf /var/lib/apt/lists/*
+df -h /dev/loop0
+
+apt-get clean
+df -h /dev/loop0
+
+rm -rf /usr/share/doc
+rm -rf /usr/share/locale/
+
+# remove firmware that (probably) isn't needed
+rm -rf /usr/lib/firmware/mrvl
+rm -rf /usr/lib/firmware/mellanox
+rm -rf /usr/lib/firmware/nvidia
+rm -rf /usr/lib/firmware/intel
+
+echo "Space available after purging things"
+df -h /dev/loop0
