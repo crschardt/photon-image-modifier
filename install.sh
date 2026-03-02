@@ -212,7 +212,13 @@ else
   RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/$VERSION"
 fi
 
-RELEASES=$(curl --insecure "$RELEASE_URL")
+if [[ -n $GH_TOKEN ]]; then
+  echo "Found token, making authenticated request"
+  RELEASES=$(curl -H "Authorization: Bearer ${GH_TOKEN}" "${RELEASE_URL}")
+else
+  echo "No token, making anonymous request"
+  RELEASES=$(curl -sk "$RELEASE_URL")
+fi
 
 echo $(grep "browser_download_url" <<< "$RELEASES")
 
