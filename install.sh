@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit on errors
-set -e +u
+set -ex +u
 
 needs_arg() {
     if [ -z "$OPTARG" ]; then
@@ -212,9 +212,9 @@ else
   RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/$VERSION"
 fi
 
-RELEASES=$(curl --silent --show-error --insecure "$RELEASE_URL")
+RELEASES=$(curl --insecure "$RELEASE_URL")
 
-grep "browser_download_url" <<< "$RELEASES"
+echo $(grep "browser_download_url" <<< "$RELEASES")
 
 DOWNLOAD_URL=$(echo "$RELEASES" |
                   grep "browser_download_url.*$ARCH_NAME\.jar" |
