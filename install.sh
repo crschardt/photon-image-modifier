@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit on errors
-set -ex +u
+set -e +u
 
 needs_arg() {
     if [ -z "$OPTARG" ]; then
@@ -212,18 +212,15 @@ else
   RELEASE_URL="https://api.github.com/repos/photonvision/photonvision/releases/tags/$VERSION"
 fi
 
+# use GITHUB TOKEN when available to authenticate
 if [[ -n $GH_TOKEN ]]; then
-  echo "Found token, making authenticated request"
-  RELEASES=$(curl -H "Authorization: Bearer ${GH_TOKEN}" "${RELEASE_URL}")
+  RELEASES=$(curl -s -H "Authorization: Bearer $GH_TOKEN" "$RELEASE_URL")
 else
-  echo "No token, making anonymous request"
   RELEASES=$(curl -sk "$RELEASE_URL")
 fi
 
-echo $(grep "browser_download_url" <<< "$RELEASES")
-
 DOWNLOAD_URL=$(echo "$RELEASES" |
-                  grep "browser_download_url.*$ARCH_NAME\.jar" |
+                  grep "browser_download_url.*${ARCH_NAME}\.jar" |
                   cut -d : -f 2,3 |
                   tr -d '"'
               )
