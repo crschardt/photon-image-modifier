@@ -261,9 +261,7 @@ else
 fi
 
 DOWNLOAD_URL=$(wget -q --header="$AUTH_TOKEN" -O - "$RELEASE_URL" |
-                  grep -E -m 1 "browser_download_url.*(${ARCH_NAME})\.jar" |
-                  cut -d : -f 2,3 |
-                  tr -d '"[:space:]'
+                  grep -oP -m 1 "browser_download_url.*\Khttp.*(${ARCH_NAME})\.jar" 
               )
 
 if [[ -z $DOWNLOAD_URL ]] ; then
